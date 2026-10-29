@@ -1,17 +1,16 @@
 import axios from 'axios';
 
-// Dynamically determine backend API URL for local office Wi-Fi
+// Render cloud backend URL hardcoded directly in code
+const DEFAULT_API_BASE_URL = 'https://carrom-backend-im8y.onrender.com/api';
+
 export const getApiBaseUrl = (): string => {
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
-  // When running in browser, connect to port 3000 on the same host machine
-  if (typeof window !== 'undefined') {
-    const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    return `${protocol}//${hostname}:3000/api`;
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
   }
-  return 'http://localhost:3000/api';
+  return DEFAULT_API_BASE_URL;
 };
 
 export const apiClient = axios.create({
