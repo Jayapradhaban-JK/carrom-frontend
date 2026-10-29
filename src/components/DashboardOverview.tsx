@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { DashboardSummary, Match } from '../types';
+import { getTeamPlayers } from '../utils/teamUtils';
 
 interface DashboardOverviewProps {
   summary: DashboardSummary;
@@ -96,13 +97,20 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <div className="bg-white/80 rounded-xl p-3.5 border border-wood-200/80 shadow-sm space-y-2.5">
                 {/* Team A */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-charcoal-900"></div>
-                    <span className="font-bold text-sm sm:text-base text-charcoal-900">
-                      {match.team_a?.team_name || 'TBD'}
-                    </span>
+                  <div className="flex items-center gap-2 truncate">
+                    <div className="w-3 h-3 rounded-full bg-charcoal-900 shrink-0"></div>
+                    <div className="truncate">
+                      <div className="font-bold text-sm sm:text-base text-charcoal-900 truncate">
+                        {match.team_a?.team_name || 'TBD'}
+                      </div>
+                      {match.team_a && (
+                        <div className="text-[11px] text-wood-600 font-semibold truncate">
+                          👥 {getTeamPlayers(match.team_a).both}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <span className="font-extrabold text-lg text-charcoal-900 px-2 py-0.5 bg-wood-100 rounded">
+                  <span className="font-extrabold text-lg text-charcoal-900 px-2 py-0.5 bg-wood-100 rounded shrink-0">
                     {match.score_a}
                   </span>
                 </div>
@@ -111,13 +119,20 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
                 {/* Team B */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-wood-200 border border-charcoal-800"></div>
-                    <span className="font-bold text-sm sm:text-base text-charcoal-900">
-                      {match.team_b?.team_name || 'TBD'}
-                    </span>
+                  <div className="flex items-center gap-2 truncate">
+                    <div className="w-3 h-3 rounded-full bg-wood-200 border border-charcoal-800 shrink-0"></div>
+                    <div className="truncate">
+                      <div className="font-bold text-sm sm:text-base text-charcoal-900 truncate">
+                        {match.team_b?.team_name || 'TBD'}
+                      </div>
+                      {match.team_b && (
+                        <div className="text-[11px] text-wood-600 font-semibold truncate">
+                          👥 {getTeamPlayers(match.team_b).both}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <span className="font-extrabold text-lg text-charcoal-900 px-2 py-0.5 bg-wood-100 rounded">
+                  <span className="font-extrabold text-lg text-charcoal-900 px-2 py-0.5 bg-wood-100 rounded shrink-0">
                     {match.score_b}
                   </span>
                 </div>

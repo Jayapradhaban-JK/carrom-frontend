@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Match, MatchStatus, Tournament } from "../types";
 import { matchesApi } from "../api";
+import { getTeamPlayers } from "../utils/teamUtils";
 
 interface ScheduleViewProps {
   matches: Match[];
@@ -149,6 +150,9 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
     const isScheduled = match.status === "SCHEDULED";
     const hasBothTeams = Boolean(match.team_a_id && match.team_b_id);
 
+    const teamAPlayers = getTeamPlayers(match.team_a);
+    const teamBPlayers = getTeamPlayers(match.team_b);
+
     return (
       <div
         key={match.id}
@@ -197,26 +201,43 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                 : ""
             }`}
           >
-            <div className="flex items-center gap-2 truncate">
-              <div
-                className={`w-3.5 h-3.5 rounded-full shrink-0 ${
-                  match.team_a_id
-                    ? "bg-charcoal-900"
-                    : "bg-wood-300 border border-dashed border-wood-500"
-                }`}
-              ></div>
-              <span className="font-bold text-sm text-charcoal-900 truncate">
-                {match.team_a?.team_name || (
-                  <span className="text-wood-400 italic font-normal">
-                    TBD (Feeder Match)
-                  </span>
-                )}
-              </span>
-              {isCompleted && match.winner_team_id === match.team_a_id && (
-                <span className="text-[10px] uppercase font-extrabold bg-amber-500 text-wood-950 px-1.5 py-0.2 rounded shrink-0">
-                  Winner
-                </span>
+            <div className="flex items-center gap-2.5 truncate">
+              {match.team_a?.logo_url ? (
+                <img
+                  src={match.team_a.logo_url}
+                  alt=""
+                  className="w-7 h-7 rounded-full object-cover shrink-0 border border-wood-300"
+                />
+              ) : (
+                <div
+                  className={`w-4 h-4 rounded-full shrink-0 ${
+                    match.team_a_id
+                      ? "bg-charcoal-900"
+                      : "bg-wood-300 border border-dashed border-wood-500"
+                  }`}
+                ></div>
               )}
+              <div className="truncate">
+                <div className="font-bold text-sm text-charcoal-900 truncate flex items-center gap-1.5">
+                  <span>
+                    {match.team_a?.team_name || (
+                      <span className="text-wood-400 italic font-normal">
+                        TBD (Feeder Match)
+                      </span>
+                    )}
+                  </span>
+                  {isCompleted && match.winner_team_id === match.team_a_id && (
+                    <span className="text-[10px] uppercase font-extrabold bg-amber-500 text-wood-950 px-1.5 py-0.2 rounded shrink-0">
+                      Winner
+                    </span>
+                  )}
+                </div>
+                {match.team_a && (
+                  <div className="text-[11px] text-wood-600 font-semibold truncate">
+                    👥 {teamAPlayers.both}
+                  </div>
+                )}
+              </div>
             </div>
             <span className="font-extrabold text-base text-charcoal-900 ml-2 px-2 py-0.5 bg-white rounded border border-wood-200">
               {match.score_a}
@@ -233,26 +254,43 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
                 : ""
             }`}
           >
-            <div className="flex items-center gap-2 truncate">
-              <div
-                className={`w-3.5 h-3.5 rounded-full shrink-0 ${
-                  match.team_b_id
-                    ? "bg-wood-200 border border-charcoal-800"
-                    : "bg-wood-300 border border-dashed border-wood-500"
-                }`}
-              ></div>
-              <span className="font-bold text-sm text-charcoal-900 truncate">
-                {match.team_b?.team_name || (
-                  <span className="text-wood-400 italic font-normal">
-                    TBD (Feeder Match)
-                  </span>
-                )}
-              </span>
-              {isCompleted && match.winner_team_id === match.team_b_id && (
-                <span className="text-[10px] uppercase font-extrabold bg-amber-500 text-wood-950 px-1.5 py-0.2 rounded shrink-0">
-                  Winner
-                </span>
+            <div className="flex items-center gap-2.5 truncate">
+              {match.team_b?.logo_url ? (
+                <img
+                  src={match.team_b.logo_url}
+                  alt=""
+                  className="w-7 h-7 rounded-full object-cover shrink-0 border border-wood-300"
+                />
+              ) : (
+                <div
+                  className={`w-4 h-4 rounded-full shrink-0 ${
+                    match.team_b_id
+                      ? "bg-wood-200 border border-charcoal-800"
+                      : "bg-wood-300 border border-dashed border-wood-500"
+                  }`}
+                ></div>
               )}
+              <div className="truncate">
+                <div className="font-bold text-sm text-charcoal-900 truncate flex items-center gap-1.5">
+                  <span>
+                    {match.team_b?.team_name || (
+                      <span className="text-wood-400 italic font-normal">
+                        TBD (Feeder Match)
+                      </span>
+                    )}
+                  </span>
+                  {isCompleted && match.winner_team_id === match.team_b_id && (
+                    <span className="text-[10px] uppercase font-extrabold bg-amber-500 text-wood-950 px-1.5 py-0.2 rounded shrink-0">
+                      Winner
+                    </span>
+                  )}
+                </div>
+                {match.team_b && (
+                  <div className="text-[11px] text-wood-600 font-semibold truncate">
+                    👥 {teamBPlayers.both}
+                  </div>
+                )}
+              </div>
             </div>
             <span className="font-extrabold text-base text-charcoal-900 ml-2 px-2 py-0.5 bg-white rounded border border-wood-200">
               {match.score_b}

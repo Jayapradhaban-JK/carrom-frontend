@@ -24,6 +24,7 @@ export interface Tournament {
   third_place_playoff: boolean;
   scoring_rule: ScoringRule;
   target_score: number;
+  banner_url?: string | null;
   settings?: Record<string, any>;
   created_at: string;
   updated_at: string;
@@ -46,6 +47,8 @@ export interface Team {
   normalized_team_name: string;
   captain_name: string;
   contact_number?: string | null;
+  logo_url?: string | null;
+  tagline?: string | null;
   status: string;
   players: Player[];
   created_at: string;
@@ -117,6 +120,7 @@ export interface StandingsRow {
   team_id: string;
   team_name: string;
   captain_name: string;
+  players_summary?: string;
   registration_number: string;
   played: number;
   won: number;

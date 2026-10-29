@@ -47,6 +47,8 @@ export const teamsApi = {
     captain_name: string;
     contact_number?: string;
     player_names: string[];
+    logo_url?: string;
+    tagline?: string;
     substitutes?: string[];
   }): Promise<Team> => {
     const res = await apiClient.post<Team>('/teams', data);
@@ -60,6 +62,8 @@ export const teamsApi = {
       captain_name?: string;
       contact_number?: string;
       player_names?: string[];
+      logo_url?: string;
+      tagline?: string;
       substitutes?: string[];
     },
   ): Promise<Team> => {
@@ -88,6 +92,11 @@ export const fixturesApi = {
 
   reset: async (data?: { reopen_registration?: boolean }): Promise<any> => {
     const res = await apiClient.post('/admin/fixtures/reset', data || {});
+    return res.data;
+  },
+
+  delete: async (): Promise<any> => {
+    const res = await apiClient.delete('/admin/fixtures');
     return res.data;
   },
 };

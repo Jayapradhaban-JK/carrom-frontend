@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   UserPlus,
-  Users,
   ShieldAlert,
   CheckCircle2,
-  Plus,
-  Trash2,
   AlertCircle,
-  Phone,
   Sparkles,
   ArrowRight,
+  Upload,
+  Image as ImageIcon,
+  Quote,
+  Users,
 } from 'lucide-react';
 import { teamsApi } from '../api';
 import { Tournament, Team } from '../types';
+import { processImageFile, PRESET_TEAM_LOGOS } from '../utils/imageUpload';
 
 interface RegistrationFormProps {
   tournament: Tournament;
@@ -25,117 +26,67 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onSuccess,
   onNavigate,
 }) => {
-  const teamSize = tournament.team_size || 2;
-  const teammatesNeeded = Math.max(0, teamSize - 1);
-
-  // Form State
+  // Exactly 2 players per team: Player 1 and Player 2
   const [teamName, setTeamName] = useState('');
-  const [captainName, setCaptainName] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [teammates, setTeammates] = useState<string[]>(
-    Array(teammatesNeeded).fill(''),
-  );
-  const [substitutes, setSubstitutes] = useState<string[]>([]);
+  const [player1Name, setPlayer1Name] = useState('');
+  const [player2Name, setPlayer2Name] = useState('');
+  const [tagline, setTagline] = useState('');
+  const [logoUrl, setLogoUrl] = useState<string>(PRESET_TEAM_LOGOS[0].url);
 
   // Status & Validation State
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [registeredTeam, setRegisteredTeam] = useState<Team | null>(null);
 
-  // Synchronize teammates array size if teamSize changes
-  React.useEffect(() => {
-    setTeammates((prev) => {
-      const needed = Math.max(0, teamSize - 1);
-      if (prev.length === needed) return prev;
-      const next = [...prev];
-      while (next.length < needed) next.push('');
-      return next.slice(0, needed);
-    });
-  }, [teamSize]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleTeammateChange = (index: number, value: string) => {
-    const updated = [...teammates];
-    updated[index] = value;
-    setTeammates(updated);
-  };
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const handleAddSubstitute = () => {
-    if (substitutes.length < 3) {
-      setSubstitutes([...substitutes, '']);
+    try {
+      const dataUrl = await processImageFile(file, 400, 400, 0.85);
+      setLogoUrl(dataUrl);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to process selected image file.');
     }
-  };
-
-  const handleSubstituteChange = (index: number, value: string) => {
-    const updated = [...substitutes];
-    updated[index] = value;
-    setSubstitutes(updated);
-  };
-
-  const handleRemoveSubstitute = (index: number) => {
-    setSubstitutes(substitutes.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    // Validation
-    const cleanTeamName = teamName.trim();
-    if (!cleanTeamName) {
-      setError('Please provide a unique Team Name.');
+    const cleanTeam = teamName.trim();
+    const p1 = player1Name.trim();
+    const p2 = player2Name.trim();
+    const cleanTagline = tagline.trim();
+
+    if (!cleanTeam) {
+      setError('Please enter a unique Team Name.');
       return;
     }
-
-    const cleanCaptain = captainName.trim();
-    if (!cleanCaptain) {
-      setError('Please provide the Captain Name.');
+    if (!p1) {
+      setError('Please enter Player 1 Name.');
       return;
     }
-
-    const cleanTeammates = teammates.map((t) => t.trim());
-    for (let i = 0; i < cleanTeammates.length; i++) {
-      if (!cleanTeammates[i]) {
-        setError(`Please provide a name for Player ${i + 2}.`);
-        return;
-      }
+    if (!p2) {
+      setError('Please enter Player 2 Name.');
+      return;
     }
-
-    // Check for duplicate player names within the team
-    const allPlayers = [cleanCaptain, ...cleanTeammates];
-    const seenNames = new Set<string>();
-    for (const name of allPlayers) {
-      const lower = name.toLowerCase();
-      if (seenNames.has(lower)) {
-        setError(`Duplicate player name "${name}" detected. All team members must be distinct.`);
-        return;
-      }
-      seenNames.add(lower);
-    }
-
-    // Check substitutes for duplicates
-    const cleanSubs = substitutes.map((s) => s.trim()).filter(Boolean);
-    const seenSubs = new Set<string>();
-    for (const sub of cleanSubs) {
-      const lower = sub.toLowerCase();
-      if (seenNames.has(lower)) {
-        setError(`Substitute "${sub}" is already listed as a core player.`);
-        return;
-      }
-      if (seenSubs.has(lower)) {
-        setError(`Duplicate substitute name "${sub}" detected.`);
-        return;
-      }
-      seenSubs.add(lower);
+    if (p1.toLowerCase() === p2.toLowerCase()) {
+      setError('Player 1 and Player 2 must have distinct names.');
+      return;
     }
 
     try {
       setSubmitting(true);
       const newTeam = await teamsApi.register({
-        team_name: cleanTeamName,
-        captain_name: cleanCaptain,
-        contact_number: contactNumber.trim() || undefined,
-        player_names: allPlayers,
-        substitutes: cleanSubs,
+        team_name: cleanTeam,
+        captain_name: p1,
+        player_names: [p1, p2],
+        logo_url: logoUrl || undefined,
+        tagline: cleanTagline || undefined,
       });
 
       setRegisteredTeam(newTeam);
@@ -144,7 +95,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       console.error('Registration failed:', err);
       setError(
         err.response?.data?.message ||
-          'Failed to register team. Please check the details and try again.',
+          'Failed to register team. A team with this name might already exist.',
       );
     } finally {
       setSubmitting(false);
@@ -153,10 +104,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
   const handleResetForm = () => {
     setTeamName('');
-    setCaptainName('');
-    setContactNumber('');
-    setTeammates(Array(teammatesNeeded).fill(''));
-    setSubstitutes([]);
+    setPlayer1Name('');
+    setPlayer2Name('');
+    setTagline('');
+    setLogoUrl(PRESET_TEAM_LOGOS[0].url);
     setRegisteredTeam(null);
     setError(null);
   };
@@ -172,41 +123,55 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           Registration is Closed
         </h3>
         <p className="text-sm text-wood-600 mb-6 leading-relaxed">
-          The tournament administrator has locked team registration. Either fixtures are already in progress or the registration window has concluded.
+          The tournament administrator has locked team registration. Fixtures are generated or the tournament is currently underway.
         </p>
         <div className="flex justify-center gap-3">
+          <button
+            onClick={() => onNavigate('fixtures')}
+            className="px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-600 text-white hover:bg-amber-500 transition shadow-sm"
+          >
+            See Fixtures &amp; Bracket
+          </button>
           <button
             onClick={() => onNavigate('teams')}
             className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-wood-800 text-ivory-100 hover:bg-wood-700 transition"
           >
-            View Registered Teams
-          </button>
-          <button
-            onClick={() => onNavigate('schedule')}
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-amber-600 text-white hover:bg-amber-500 transition shadow-sm"
-          >
-            View Match Schedule
+            View Teams
           </button>
         </div>
       </div>
     );
   }
 
-  // Registration Success View
+  // Registration Success Confirmation
   if (registeredTeam) {
     return (
       <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border-2 border-emerald-300 shadow-board text-center animate-fadeIn">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
-          <CheckCircle2 className="w-10 h-10" />
+        <div className="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-emerald-300 p-1 bg-emerald-50 flex items-center justify-center shadow-md">
+          {registeredTeam.logo_url ? (
+            <img
+              src={registeredTeam.logo_url}
+              alt={registeredTeam.team_name}
+              className="w-full h-full object-cover rounded-full"
+            />
+          ) : (
+            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          )}
         </div>
 
         <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-2">
-          Registration Confirmed
+          Team Registered Successfully!
         </span>
 
-        <h3 className="text-2xl font-black text-charcoal-900 mb-1">
+        <h3 className="text-2xl sm:text-3xl font-black text-charcoal-900 mb-1">
           {registeredTeam.team_name}
         </h3>
+
+        {registeredTeam.tagline && (
+          <p className="text-xs text-amber-700 italic font-semibold mb-4">
+            "{registeredTeam.tagline}"
+          </p>
+        )}
 
         <div className="my-5 p-4 bg-wood-50 rounded-2xl border border-wood-200 inline-block w-full text-left">
           <div className="flex justify-between items-center pb-2 border-b border-wood-200">
@@ -218,45 +183,35 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </span>
           </div>
 
-          <div className="pt-2 text-xs text-charcoal-800 space-y-1">
+          <div className="pt-3 text-xs text-charcoal-800 space-y-1">
             <p>
-              <strong>Captain:</strong> {registeredTeam.captain_name}
+              <strong>Player 1:</strong> {registeredTeam.captain_name}
             </p>
             <p>
-              <strong>Players:</strong>{' '}
-              {registeredTeam.players
-                ?.filter((p) => !p.is_substitute)
-                .map((p) => p.player_name)
-                .join(', ')}
+              <strong>Player 2:</strong>{' '}
+              {registeredTeam.players?.find((p) => !p.is_captain)?.player_name ||
+                registeredTeam.players?.[1]?.player_name ||
+                'Teammate'}
             </p>
-            {registeredTeam.players?.some((p) => p.is_substitute) && (
-              <p>
-                <strong>Substitutes:</strong>{' '}
-                {registeredTeam.players
-                  ?.filter((p) => p.is_substitute)
-                  .map((p) => p.player_name)
-                  .join(', ')}
-              </p>
-            )}
           </div>
         </div>
 
         <p className="text-xs text-wood-500 mb-6">
-          Your team is officially registered for the tournament! Keep your registration number for reference during match calls.
+          Your 2-player team is locked in. Head over to the fixtures bracket to track your upcoming matches!
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-3">
           <button
             onClick={handleResetForm}
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-wood-100 text-wood-800 hover:bg-wood-200 transition"
+            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-wood-100 text-wood-800 hover:bg-wood-200 transition"
           >
             Register Another Team
           </button>
           <button
-            onClick={() => onNavigate('teams')}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm"
+            onClick={() => onNavigate('fixtures')}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm"
           >
-            <span>View All Teams</span>
+            <span>See Fixtures</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -264,40 +219,38 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     );
   }
 
-  // Active Registration Form
+  // Active 2-Player Team Registration Form
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-xl mx-auto">
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-wood-300 shadow-board relative overflow-hidden">
         {/* Top wood accent bar */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-wood-600 via-amber-600 to-wood-600"></div>
 
-        <div className="mb-6">
-          <div className="flex items-center gap-2 text-amber-700 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            Office Carrom Championship
+        <div className="mb-6 text-center sm:text-left">
+          <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            2-Player Team Entry
           </div>
-          <h2 className="text-2xl font-black text-charcoal-900 tracking-tight">
-            Team Registration
+          <h2 className="text-2xl sm:text-3xl font-black text-charcoal-900 tracking-tight">
+            Register Your Team
           </h2>
           <p className="text-xs sm:text-sm text-wood-600 mt-1">
-            Register your team for the championship. Each team requires exactly{' '}
-            <strong className="text-charcoal-900">{teamSize} players</strong>{' '}
-            (Captain + {teammatesNeeded} {teammatesNeeded === 1 ? 'partner' : 'players'}).
+            Fill in your team details, both player names, tagline, and select or upload a team logo.
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5 animate-shake">
+          <div className="mb-5 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5 animate-shake">
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
             <div>
-              <p className="font-bold">Registration Error</p>
+              <p className="font-bold">Registration Notice</p>
               <p className="text-xs text-rose-700 mt-0.5">{error}</p>
             </div>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Team Name */}
+          {/* 1. Team Name */}
           <div>
             <label className="block text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-1.5">
               Team Name <span className="text-queen-600">*</span>
@@ -307,135 +260,148 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               required
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              placeholder="e.g. Strike Masters, Queen Hunters, Pocket Rockets"
+              placeholder="e.g. Strike Kings, Red Queens, Board Masters"
               className="w-full px-4 py-2.5 rounded-xl border border-wood-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-semibold text-charcoal-900 placeholder:text-wood-400 outline-none transition bg-ivory-50/50"
             />
-            <p className="text-[11px] text-wood-500 mt-1">
-              Must be unique across the tournament (case-insensitive).
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Captain Name */}
+          {/* 2 & 3. Team Members (Exactly 2 Persons) */}
+          <div className="bg-wood-50/70 p-4 rounded-2xl border border-wood-200 space-y-3.5">
+            <div className="flex items-center gap-2 text-xs font-bold text-charcoal-900 uppercase tracking-wide">
+              <Users className="w-4 h-4 text-amber-600" />
+              <span>Team Members (2 Persons)</span>
+            </div>
+
             <div>
-              <label className="block text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-1.5">
-                Team Captain (Player 1) <span className="text-queen-600">*</span>
+              <label className="block text-xs font-medium text-wood-700 mb-1">
+                Player 1 (Captain) <span className="text-queen-600">*</span>
               </label>
               <input
                 type="text"
                 required
-                value={captainName}
-                onChange={(e) => setCaptainName(e.target.value)}
-                placeholder="Full Name of Captain"
-                className="w-full px-4 py-2.5 rounded-xl border border-wood-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-semibold text-charcoal-900 placeholder:text-wood-400 outline-none transition bg-ivory-50/50"
+                value={player1Name}
+                onChange={(e) => setPlayer1Name(e.target.value)}
+                placeholder="Full Name of Player 1"
+                className="w-full px-4 py-2 rounded-xl border border-wood-300 focus:border-amber-500 text-sm font-semibold text-charcoal-900 placeholder:text-wood-400 outline-none bg-white"
               />
             </div>
 
-            {/* Contact Number */}
             <div>
-              <label className="block text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-1.5 flex items-center justify-between">
-                <span>Captain Phone (Optional)</span>
-                <span className="text-[10px] text-wood-400 font-normal">For match alerts</span>
+              <label className="block text-xs font-medium text-wood-700 mb-1">
+                Player 2 <span className="text-queen-600">*</span>
               </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  value={contactNumber}
-                  onChange={(e) => setContactNumber(e.target.value)}
-                  placeholder="e.g. +91 98765 43210"
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-wood-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm text-charcoal-900 placeholder:text-wood-400 outline-none transition bg-ivory-50/50"
-                />
-                <Phone className="w-4 h-4 text-wood-400 absolute left-3 top-3" />
-              </div>
+              <input
+                type="text"
+                required
+                value={player2Name}
+                onChange={(e) => setPlayer2Name(e.target.value)}
+                placeholder="Full Name of Player 2"
+                className="w-full px-4 py-2 rounded-xl border border-wood-300 focus:border-amber-500 text-sm font-semibold text-charcoal-900 placeholder:text-wood-400 outline-none bg-white"
+              />
             </div>
           </div>
 
-          {/* Core Teammates */}
-          <div className="pt-2 border-t border-wood-200">
-            <h4 className="text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-3 flex items-center justify-between">
-              <span>Required Teammates ({teammatesNeeded} {teammatesNeeded === 1 ? 'Player' : 'Players'})</span>
-              <span className="text-amber-700 text-xs lowercase font-normal">team size: {teamSize}</span>
-            </h4>
+          {/* 4. Team Tagline */}
+          <div>
+            <label className="block text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-1.5 flex items-center justify-between">
+              <span>Team Tagline / Slogan</span>
+              <span className="text-[10px] text-wood-500 font-normal">Optional</span>
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={tagline}
+                onChange={(e) => setTagline(e.target.value)}
+                placeholder="e.g. Pocketing wins, one coin at a time"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-wood-300 focus:border-amber-500 text-sm text-charcoal-900 placeholder:text-wood-400 outline-none transition bg-ivory-50/50"
+              />
+              <Quote className="w-4 h-4 text-wood-400 absolute left-3 top-3" />
+            </div>
+          </div>
 
-            <div className="space-y-3">
-              {teammates.map((teammate, idx) => (
-                <div key={idx}>
-                  <label className="block text-xs font-medium text-wood-700 mb-1">
-                    Player {idx + 2} Name <span className="text-queen-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={teammate}
-                    onChange={(e) => handleTeammateChange(idx, e.target.value)}
-                    placeholder={`Full Name of Player ${idx + 2}`}
-                    className="w-full px-4 py-2.5 rounded-xl border border-wood-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-semibold text-charcoal-900 placeholder:text-wood-400 outline-none transition bg-ivory-50/50"
+          {/* 5. Team Logo (Upload or Preset) */}
+          <div className="pt-1">
+            <label className="block text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-2">
+              Team Logo / Avatar
+            </label>
+
+            <div className="flex items-center gap-4 p-3 bg-ivory-50 rounded-2xl border border-wood-200">
+              {/* Preview Thumbnail */}
+              <div className="w-14 h-14 rounded-2xl bg-white border-2 border-wood-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="Logo preview"
+                    className="w-full h-full object-cover"
                   />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Optional Substitutes */}
-          <div className="pt-2 border-t border-wood-200">
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                <h4 className="text-xs font-bold text-charcoal-800 uppercase tracking-wide">
-                  Substitute Players (Optional)
-                </h4>
-                <p className="text-[11px] text-wood-500">
-                  Add reserves in case an active player is unavailable.
-                </p>
+                ) : (
+                  <ImageIcon className="w-6 h-6 text-wood-400" />
+                )}
               </div>
 
-              {substitutes.length < 3 && (
+              {/* Upload Button */}
+              <div className="flex-1 space-y-1">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleImageFileChange}
+                  className="hidden"
+                />
                 <button
                   type="button"
-                  onClick={handleAddSubstitute}
-                  className="flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-100 hover:bg-amber-200 px-2.5 py-1 rounded-lg transition"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-wood-800 hover:bg-wood-700 text-ivory-50 transition shadow-sm"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  Add Sub
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Upload Logo from Device</span>
                 </button>
-              )}
+                <p className="text-[10px] text-wood-500">
+                  Pick any image from your phone or choose a preset below.
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2 mt-2">
-              {substitutes.map((sub, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={sub}
-                    onChange={(e) => handleSubstituteChange(idx, e.target.value)}
-                    placeholder={`Substitute ${idx + 1} Name`}
-                    className="flex-1 px-4 py-2 rounded-xl border border-wood-300 focus:border-amber-500 text-sm text-charcoal-900 placeholder:text-wood-400 outline-none bg-ivory-50/50"
+            {/* Quick Carrom Coin Presets */}
+            <div className="flex items-center gap-2 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
+              <span className="text-[10px] text-wood-400 font-bold uppercase shrink-0">
+                Presets:
+              </span>
+              {PRESET_TEAM_LOGOS.map((preset) => (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => setLogoUrl(preset.url)}
+                  className={`w-8 h-8 rounded-full border-2 p-0.5 transition shrink-0 ${
+                    logoUrl === preset.url
+                      ? 'border-amber-600 scale-110 shadow-md ring-2 ring-amber-400/40'
+                      : 'border-wood-300 hover:border-wood-500 opacity-70 hover:opacity-100'
+                  }`}
+                  title={preset.name}
+                >
+                  <img
+                    src={preset.url}
+                    alt={preset.name}
+                    className="w-full h-full rounded-full"
                   />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveSubstitute(idx)}
-                    className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition"
-                    title="Remove substitute"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="pt-4">
+          {/* Submit Registration Button */}
+          <div className="pt-2">
             <button
               type="submit"
               disabled={submitting}
               className="w-full py-3.5 px-6 rounded-2xl text-sm sm:text-base font-extrabold text-white bg-amber-600 hover:bg-amber-500 active:scale-[0.99] transition shadow-lg hover:shadow-amber-600/30 flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
             >
               {submitting ? (
-                <span>Registering Team...</span>
+                <span>Registering 2-Player Team...</span>
               ) : (
                 <>
                   <UserPlus className="w-5 h-5" />
-                  <span>Submit Team Registration</span>
+                  <span>Register Team</span>
                 </>
               )}
             </button>
@@ -445,4 +411,3 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     </div>
   );
 };
-

@@ -12,6 +12,7 @@ import {
 import confetti from "canvas-confetti";
 import { Match, Tournament } from "../types";
 import { matchesApi } from "../api";
+import { getTeamPlayers } from "../utils/teamUtils";
 
 interface ScoreModalProps {
   match: Match | null;
@@ -40,6 +41,8 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
 
   const teamAName = match.team_a?.team_name || "Team A";
   const teamBName = match.team_b?.team_name || "Team B";
+  const teamAPlayers = getTeamPlayers(match.team_a);
+  const teamBPlayers = getTeamPlayers(match.team_b);
   const isKnockout = tournament.format === "SINGLE_ELIMINATION";
   const isTargetScore = tournament.scoring_rule === "TARGET_SCORE";
   const targetScore = tournament.target_score || 25;
@@ -181,10 +184,17 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="font-bold text-sm text-charcoal-900 truncate">
-                {teamAName}
-              </span>
-              <div className="w-3 h-3 rounded-full bg-charcoal-900"></div>
+              <div className="truncate pr-2">
+                <span className="font-bold text-sm text-charcoal-900 truncate block">
+                  {teamAName}
+                </span>
+                {match.team_a && (
+                  <span className="text-[11px] text-wood-600 font-semibold truncate block">
+                    👥 {teamAPlayers.both}
+                  </span>
+                )}
+              </div>
+              <div className="w-3 h-3 rounded-full bg-charcoal-900 shrink-0"></div>
             </div>
 
             {/* Score Display and +/- Buttons */}
@@ -247,10 +257,17 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="font-bold text-sm text-charcoal-900 truncate">
-                {teamBName}
-              </span>
-              <div className="w-3 h-3 rounded-full bg-wood-200 border border-charcoal-800"></div>
+              <div className="truncate pr-2">
+                <span className="font-bold text-sm text-charcoal-900 truncate block">
+                  {teamBName}
+                </span>
+                {match.team_b && (
+                  <span className="text-[11px] text-wood-600 font-semibold truncate block">
+                    👥 {teamBPlayers.both}
+                  </span>
+                )}
+              </div>
+              <div className="w-3 h-3 rounded-full bg-wood-200 border border-charcoal-800 shrink-0"></div>
             </div>
 
             {/* Score Display and +/- Buttons */}

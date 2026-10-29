@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Team, Tournament } from "../types";
 import { teamsApi } from "../api";
+import { getTeamPlayers } from "../utils/teamUtils";
 
 interface TeamsListProps {
   teams: Team[];
@@ -167,23 +168,22 @@ export const TeamsList: React.FC<TeamsListProps> = ({
       {sortedTeams.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {sortedTeams.map((team) => {
-            const activePlayers =
-              team.players?.filter((p) => !p.is_substitute) || [];
+            const playersInfo = getTeamPlayers(team);
             const subPlayers =
               team.players?.filter((p) => p.is_substitute) || [];
 
             return (
               <div
                 key={team.id}
-                className="bg-white rounded-2xl border-2 border-wood-200 hover:border-amber-500/60 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between group"
+                className="bg-white rounded-3xl border-2 border-wood-200 hover:border-amber-500/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between group"
               >
                 <div>
                   {/* Top Bar: Registration # and timestamp */}
-                  <div className="flex items-center justify-between text-xs text-wood-500 mb-2">
-                    <span className="font-mono font-extrabold px-2.5 py-0.5 rounded-md bg-wood-100 text-wood-800 border border-wood-200">
+                  <div className="flex items-center justify-between text-xs text-wood-500 mb-3">
+                    <span className="font-mono font-extrabold px-2.5 py-0.5 rounded-lg bg-wood-100 text-wood-800 border border-wood-200">
                       {team.registration_number}
                     </span>
-                    <span>
+                    <span className="text-[11px] text-wood-400">
                       {new Date(team.created_at).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -191,43 +191,84 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                     </span>
                   </div>
 
-                  {/* Team Name */}
-                  <h3 className="text-lg font-black text-charcoal-900 group-hover:text-amber-700 transition">
-                    {team.team_name}
-                  </h3>
+                  {/* Team Header: Logo + Name + Tagline */}
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-ivory-100 border-2 border-wood-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+                      {team.logo_url ? (
+                        <img
+                          src={team.logo_url}
+                          alt={team.team_name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-5 h-5 rounded-full bg-amber-600"></div>
+                      )}
+                    </div>
 
-                  {/* Captain with Star badge */}
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-50/80 px-2.5 py-1 rounded-lg border border-amber-200/60 w-fit my-2.5">
-                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                    <span>Captain: {team.captain_name}</span>
-                    {team.contact_number && (
-                      <span className="font-normal text-wood-500 ml-1">
-                        ({team.contact_number})
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Active Players List */}
-                  <div className="space-y-1.5 my-3">
-                    <span className="text-[11px] font-bold text-wood-500 uppercase tracking-wide">
-                      Active Lineup:
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {activePlayers.map((player) => (
-                        <span
-                          key={player.id}
-                          className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-md bg-ivory-100 text-charcoal-800 border border-wood-200"
-                        >
-                          <UserCheck className="w-3 h-3 text-wood-500" />
-                          {player.player_name}
-                        </span>
-                      ))}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xl font-black text-charcoal-900 group-hover:text-amber-700 transition truncate">
+                        {team.team_name}
+                      </h3>
+                      {team.tagline ? (
+                        <p className="text-xs text-amber-700 italic font-semibold truncate mt-0.5">
+                          "{team.tagline}"
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-wood-400">2-Player Team</p>
+                      )}
                     </div>
                   </div>
 
-                  {/* Substitutes if any */}
+                  {/* Both Team Members Displayed Prominently */}
+                  <div className="bg-ivory-50/80 rounded-2xl p-3 border border-wood-200 space-y-2">
+                    <div className="text-[11px] font-bold text-wood-600 uppercase tracking-wide flex items-center justify-between">
+                      <span>Team Members</span>
+                      <span className="text-amber-700 text-[10px]">2 Players</span>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {/* Player 1 (Captain) */}
+                      <div className="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-wood-200/80 shadow-xs">
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-800 font-extrabold text-[11px] flex items-center justify-center shrink-0 border border-amber-300">
+                            P1
+                          </span>
+                          <span className="font-extrabold text-xs sm:text-sm text-charcoal-900 truncate">
+                            {playersInfo.player1}
+                          </span>
+                        </div>
+                        <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full shrink-0">
+                          Captain
+                        </span>
+                      </div>
+
+                      {/* Player 2 (Teammate) */}
+                      <div className="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-wood-200/80 shadow-xs">
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="w-6 h-6 rounded-lg bg-wood-100 text-wood-800 font-extrabold text-[11px] flex items-center justify-center shrink-0 border border-wood-300">
+                            P2
+                          </span>
+                          <span className="font-extrabold text-xs sm:text-sm text-charcoal-900 truncate">
+                            {playersInfo.player2}
+                          </span>
+                        </div>
+                        <span className="text-[10px] uppercase font-semibold text-wood-600 bg-wood-100 px-2 py-0.5 rounded-full shrink-0">
+                          Player
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Optional contact if available */}
+                  {team.contact_number && (
+                    <div className="text-[11px] text-wood-500 mt-2 px-1">
+                      Phone: <span className="font-medium text-charcoal-800">{team.contact_number}</span>
+                    </div>
+                  )}
+
+                  {/* Reserves if any */}
                   {subPlayers.length > 0 && (
-                    <div className="space-y-1 pt-2 border-t border-wood-100">
+                    <div className="space-y-1 pt-2.5 mt-2 border-t border-wood-100">
                       <span className="text-[10px] font-bold text-wood-400 uppercase tracking-wide">
                         Reserves:
                       </span>

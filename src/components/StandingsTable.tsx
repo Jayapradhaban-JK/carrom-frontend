@@ -159,8 +159,8 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({
                             ({row.registration_number})
                           </span>
                         </div>
-                        <div className="text-[11px] text-wood-500">
-                          Capt: {row.captain_name}
+                        <div className="text-[11px] text-wood-600 font-medium">
+                          👥 {row.players_summary || `Capt: ${row.captain_name}`}
                         </div>
                       </div>
                     </td>
