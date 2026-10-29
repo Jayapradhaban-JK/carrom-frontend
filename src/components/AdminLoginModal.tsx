@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Shield, X, Lock, User, AlertCircle, Info } from 'lucide-react';
-import { authApi } from '../api';
+import React, { useState } from "react";
+import { Shield, X, Lock, User, AlertCircle, Info } from "lucide-react";
+import { authApi } from "../api";
 
 interface AdminLoginModalProps {
   isOpen: boolean;
@@ -15,8 +15,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,14 +27,14 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     try {
       setLoading(true);
       const res = await authApi.login({ username, password });
-      localStorage.setItem('carrom_admin_token', res.access_token);
-      localStorage.setItem('carrom_admin_user', JSON.stringify(res.user));
+      localStorage.setItem("carrom_admin_token", res.access_token);
+      localStorage.setItem("carrom_admin_user", JSON.stringify(res.user));
       onSuccess();
       onClose();
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-          'Invalid credentials. Please verify your administrator password.',
+          "Invalid credentials. Please verify your administrator password.",
       );
     } finally {
       setLoading(false);
@@ -59,7 +59,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           Administrator Login
         </h3>
         <p className="text-xs text-wood-600 mb-4">
-          Authenticate to manage fixtures, scores, teams, and tournament settings.
+          Authenticate to manage fixtures, scores, teams, and tournament
+          settings.
         </p>
 
         {error && (
@@ -106,9 +107,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           <div className="p-3 bg-wood-50 rounded-xl border border-wood-200 text-[11px] text-wood-600 flex items-start gap-1.5">
             <Info className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
-            <span>
-              Initial default credentials: <strong>admin</strong> / <strong>admin1234</strong>
-            </span>
           </div>
 
           <button
@@ -116,11 +114,10 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
             disabled={loading}
             className="w-full py-3 rounded-xl text-xs sm:text-sm font-bold text-white bg-amber-600 hover:bg-amber-500 transition shadow-sm disabled:opacity-60"
           >
-            {loading ? 'Authenticating...' : 'Sign In as Administrator'}
+            {loading ? "Authenticating..." : "Sign In as Administrator"}
           </button>
         </form>
       </div>
     </div>
   );
 };
-
