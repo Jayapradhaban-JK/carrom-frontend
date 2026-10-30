@@ -18,6 +18,8 @@ import {
   UserPlus,
   UserCheck,
   Crown,
+  Clock,
+  Timer,
 } from 'lucide-react';
 import { Tournament, Team, Match, TournamentUser } from '../types';
 import { tournamentApi, teamsApi, fixturesApi, usersApi } from '../api';
@@ -49,6 +51,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [deletingTeamId, setDeletingTeamId] = useState<string | null>(null);
   const [regOpen, setRegOpen] = useState(tournament.registration_open);
   const [teamSearch, setTeamSearch] = useState('');
+
+  // Countdown deadline state
+  const initialDeadline = tournament.settings?.registration_deadline
+    ? new Date(tournament.settings.registration_deadline).toISOString().slice(0, 16)
+    : '';
+  const [deadlineInput, setDeadlineInput] = useState<string>(initialDeadline);
+  const [deadlineSaving, setDeadlineSaving] = useState(false);
+  const [deadlineMsg, setDeadlineMsg] = useState<string | null>(null);
 
   // --- TAB 2: FIXTURES MAKING STATE ---
   const [bannerUrl, setBannerUrl] = useState<string>(tournament.banner_url || '');
@@ -142,6 +152,55 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     } finally {
       setDeletingTeamId(null);
     }
+  };
+
+  const handleSaveDeadline = async () => {
+    if (!deadlineInput) {
+      alert('Please choose a deadline date and time.');
+      return;
+    }
+    try {
+      setDeadlineSaving(true);
+      const iso = new Date(deadlineInput).toISOString();
+      await tournamentApi.updateSettings({
+        registration_deadline: iso,
+        registration_countdown: iso,
+        countdown_enabled: true,
+      });
+      setDeadlineMsg('Registration countdown timer set! Users will see only the countdown screen until it completes.');
+      setTimeout(() => setDeadlineMsg(null), 4000);
+      onRefresh();
+    } catch (err: any) {
+      alert('Failed to save countdown deadline.');
+    } finally {
+      setDeadlineSaving(false);
+    }
+  };
+
+  const handleClearDeadline = async () => {
+    try {
+      setDeadlineSaving(true);
+      await tournamentApi.updateSettings({
+        registration_deadline: null,
+        registration_countdown: null,
+        countdown_enabled: false,
+      });
+      setDeadlineInput('');
+      setDeadlineMsg('Countdown cleared! Registration is unlocked immediately.');
+      setTimeout(() => setDeadlineMsg(null), 3000);
+      onRefresh();
+    } catch (err: any) {
+      alert('Failed to clear countdown deadline.');
+    } finally {
+      setDeadlineSaving(false);
+    }
+  };
+
+  const setPresetDeadline = (minutesFromNow: number) => {
+    const target = new Date(Date.now() + minutesFromNow * 60 * 1000);
+    const offset = target.getTimezoneOffset() * 60000;
+    const local = new Date(target.getTime() - offset).toISOString().slice(0, 16);
+    setDeadlineInput(local);
   };
 
   // --- FIXTURES ACTIONS ---
@@ -410,6 +469,124 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 }`}
               >
                 {regOpen ? 'Close Registration' : 'Open Registration'}
+              </button>
+            </div>
+          </div>
+
+          {/* Registration Countdown & Deadline Control */}
+          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-600" />
+                  <h3 className="text-sm font-black text-stone-900 uppercase tracking-wide">
+                    Registration Countdown Timer
+                  </h3>
+                </div>
+                <p className="text-[11px] text-stone-500 mt-0.5">
+                  Participants will see <strong>ONLY the countdown screen</strong> until this timer completes.
+                </p>
+              </div>
+
+              {tournament.settings?.registration_deadline && (
+                <span className="text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full flex items-center gap-1.5 animate-fadeIn">
+                  <Timer className="w-3.5 h-3.5 text-amber-700" />
+                  <span>
+                    Opens at:{' '}
+                    {new Date(tournament.settings.registration_deadline).toLocaleString([], {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    })}
+                  </span>
+                </span>
+              )}
+            </div>
+
+            {deadlineMsg && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-fadeIn">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="font-semibold">{deadlineMsg}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+              <div className="md:col-span-5">
+                <label className="block text-[11px] font-bold text-stone-700 uppercase mb-1">
+                  Countdown Target (Date &amp; Time)
+                </label>
+                <input
+                  type="datetime-local"
+                  value={deadlineInput}
+                  onChange={(e) => setDeadlineInput(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500 font-semibold"
+                />
+              </div>
+
+              <div className="md:col-span-7 flex flex-wrap items-center gap-2">
+                <span className="text-[11px] text-stone-500 font-semibold">Presets:</span>
+                <button
+                  type="button"
+                  onClick={() => setPresetDeadline(2)}
+                  className="px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 text-xs bg-stone-50 text-stone-800 font-medium transition"
+                >
+                  +2 Mins
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetDeadline(5)}
+                  className="px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 text-xs bg-stone-50 text-stone-800 font-medium transition"
+                >
+                  +5 Mins
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetDeadline(15)}
+                  className="px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 text-xs bg-stone-50 text-stone-800 font-medium transition"
+                >
+                  +15 Mins
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetDeadline(30)}
+                  className="px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 text-xs bg-stone-50 text-stone-800 font-medium transition"
+                >
+                  +30 Mins
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetDeadline(60)}
+                  className="px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 text-xs bg-stone-50 text-stone-800 font-medium transition"
+                >
+                  +1 Hour
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetDeadline(1440)}
+                  className="px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 text-xs bg-stone-50 text-stone-800 font-medium transition"
+                >
+                  +24 Hours
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-stone-100">
+              <button
+                type="button"
+                disabled={deadlineSaving || !tournament.settings?.registration_deadline}
+                onClick={handleClearDeadline}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 hover:bg-rose-50 border border-rose-200 transition disabled:opacity-40"
+              >
+                Clear / Open Registration Now
+              </button>
+
+              <button
+                type="button"
+                disabled={deadlineSaving || !deadlineInput}
+                onClick={handleSaveDeadline}
+                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
+              >
+                <Clock className="w-4 h-4" />
+                <span>{deadlineSaving ? 'Starting...' : 'Start Countdown'}</span>
               </button>
             </div>
           </div>

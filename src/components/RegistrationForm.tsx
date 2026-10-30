@@ -15,6 +15,8 @@ import {
   Crown,
   X,
   Lock,
+  Clock,
+  Timer,
 } from 'lucide-react';
 import { teamsApi, usersApi } from '../api';
 import { Tournament, Team, TournamentUser } from '../types';
@@ -22,12 +24,14 @@ import { processImageFile, PRESET_TEAM_LOGOS } from '../utils/imageUpload';
 
 interface RegistrationFormProps {
   tournament: Tournament;
+  existingTeams?: Team[];
   onSuccess: (team: Team) => void;
   onNavigate: (tab: string) => void;
 }
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   tournament,
+  existingTeams = [],
   onSuccess,
   onNavigate,
 }) => {
@@ -68,6 +72,48 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   useEffect(() => {
     loadUsers();
   }, []);
+
+  // Live Countdown State
+  const [timeLeft, setTimeLeft] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    isExpired: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    const countdownTargetStr =
+      tournament.settings?.registration_countdown ||
+      tournament.settings?.registration_deadline;
+
+    if (!countdownTargetStr) {
+      setTimeLeft(null);
+      return;
+    }
+
+    const calculate = () => {
+      const now = Date.now();
+      const target = new Date(countdownTargetStr).getTime();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true });
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft({ days, hours, minutes, seconds, isExpired: false });
+    };
+
+    calculate();
+    const timer = setInterval(calculate, 1000);
+    return () => clearInterval(timer);
+  }, [tournament.settings?.registration_countdown, tournament.settings?.registration_deadline]);
 
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -125,8 +171,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     const cleanTeam = teamName.trim();
     const cleanTagline = tagline.trim();
 
+    if (timeLeft?.isExpired) {
+      setError('Registration deadline has passed. Team registrations are now closed.');
+      return;
+    }
+
     if (!cleanTeam) {
       setError('Please enter a unique Team Name.');
+      return;
+    }
+
+    if (isTeamNameDuplicate) {
+      setError(`A team named "${cleanTeam}" is already registered. Please choose a different name.`);
       return;
     }
 
@@ -232,6 +288,104 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     );
   }
 
+  // If Countdown is Active -> Show ONLY the Countdown Screen!
+  if (timeLeft && !timeLeft.isExpired) {
+    const targetDateStr =
+      tournament.settings?.registration_countdown ||
+      tournament.settings?.registration_deadline;
+
+    return (
+      <div className="max-w-xl mx-auto py-8 sm:py-12 animate-fadeIn text-center">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-sm relative">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-4 border border-amber-200">
+            <Clock className="w-8 h-8 animate-pulse text-amber-600" />
+          </div>
+
+          <span className="inline-block px-3.5 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-amber-100 text-amber-800 mb-2">
+            Registration Begins Soon
+          </span>
+
+          <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mb-2">
+            Registration Opens In
+          </h2>
+
+          <p className="text-xs sm:text-sm text-stone-500 mb-8 max-w-sm mx-auto">
+            Team registration is locked until the countdown completes. The registration form will unlock automatically.
+          </p>
+
+          {/* Big Countdown Display */}
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6">
+            {timeLeft.days > 0 && (
+              <>
+                <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-stone-200 min-w-[70px] shadow-sm">
+                  <span className="block text-2xl sm:text-3xl font-black text-stone-900 font-mono">
+                    {String(timeLeft.days).padStart(2, '0')}
+                  </span>
+                  <span className="block text-[10px] font-bold text-stone-500 uppercase mt-0.5">Days</span>
+                </div>
+                <span className="text-2xl font-black text-amber-600">:</span>
+              </>
+            )}
+
+            <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-stone-200 min-w-[70px] shadow-sm">
+              <span className="block text-2xl sm:text-3xl font-black text-stone-900 font-mono">
+                {String(timeLeft.hours).padStart(2, '0')}
+              </span>
+              <span className="block text-[10px] font-bold text-stone-500 uppercase mt-0.5">Hours</span>
+            </div>
+
+            <span className="text-2xl font-black text-amber-600">:</span>
+
+            <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-stone-200 min-w-[70px] shadow-sm">
+              <span className="block text-2xl sm:text-3xl font-black text-stone-900 font-mono">
+                {String(timeLeft.minutes).padStart(2, '0')}
+              </span>
+              <span className="block text-[10px] font-bold text-stone-500 uppercase mt-0.5">Mins</span>
+            </div>
+
+            <span className="text-2xl font-black text-amber-600">:</span>
+
+            <div className="bg-amber-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-amber-300 min-w-[70px] shadow-sm">
+              <span className="block text-2xl sm:text-3xl font-black text-amber-700 font-mono">
+                {String(timeLeft.seconds).padStart(2, '0')}
+              </span>
+              <span className="block text-[10px] font-bold text-amber-700 uppercase mt-0.5">Secs</span>
+            </div>
+          </div>
+
+          {targetDateStr && (
+            <p className="text-xs text-stone-400">
+              Registration unlocks at:{' '}
+              <strong className="text-stone-700">
+                {new Date(targetDateStr).toLocaleString([], {
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                })}
+              </strong>
+            </p>
+          )}
+
+          <div className="mt-8 pt-6 border-t border-stone-100 flex justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => onNavigate('teams')}
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition"
+            >
+              View Registered Teams
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate('fixtures')}
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition"
+            >
+              View Fixtures
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Registration Success Confirmation
   if (registeredTeam) {
     return (
@@ -332,6 +486,16 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     );
   });
 
+  const normalizedInputName = teamName.trim().toLowerCase().replace(/\s+/g, ' ');
+  const isTeamNameDuplicate = Boolean(
+    normalizedInputName &&
+      existingTeams.some(
+        (t) =>
+          (t.normalized_team_name || t.team_name.trim().toLowerCase().replace(/\s+/g, ' ')) ===
+          normalizedInputName,
+      ),
+  );
+
   return (
     <div className="animate-fadeIn">
       {/* Side-by-Side 2-Column Grid */}
@@ -366,8 +530,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* 1. Team Name */}
             <div>
-              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5">
-                Team Name <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5 flex items-center justify-between">
+                <span>Team Name <span className="text-rose-600">*</span></span>
+                {teamName.trim() && !isTeamNameDuplicate && (
+                  <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Name available
+                  </span>
+                )}
               </label>
               <input
                 type="text"
@@ -375,8 +545,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
                 placeholder="e.g. Strike Kings, Red Queens, Board Masters"
-                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-semibold text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
+                className={`w-full px-4 py-2.5 rounded-xl border text-sm font-semibold text-stone-900 placeholder:text-stone-400 outline-none transition ${
+                  isTeamNameDuplicate
+                    ? 'border-rose-400 bg-rose-50/40 focus:border-rose-500 ring-2 ring-rose-200'
+                    : 'border-stone-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-stone-50/50'
+                }`}
               />
+              {isTeamNameDuplicate && (
+                <p className="text-[11px] text-rose-600 font-bold mt-1.5 flex items-center gap-1 animate-fadeIn">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  A team named "{teamName.trim()}" is already registered. Please choose a different team name.
+                </p>
+              )}
             </div>
 
             {/* 2. Selected Roster Slots (Player 1 Captain & Player 2) */}
@@ -556,11 +736,19 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <div className="pt-2">
               <button
                 type="submit"
-                disabled={submitting || !player1UserId || !player2UserId}
+                disabled={
+                  submitting ||
+                  !player1UserId ||
+                  !player2UserId ||
+                  isTeamNameDuplicate ||
+                  Boolean(timeLeft?.isExpired)
+                }
                 className="w-full py-3.5 px-6 rounded-2xl text-sm sm:text-base font-extrabold text-white bg-amber-600 hover:bg-amber-500 active:scale-[0.99] transition shadow-md hover:shadow-amber-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (
                   <span>Registering 2-Player Team...</span>
+                ) : timeLeft?.isExpired ? (
+                  <span>Registration Closed (Deadline Expired)</span>
                 ) : (
                   <>
                     <UserPlus className="w-5 h-5" />

@@ -43,7 +43,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Play', 'sans-serif'],
       },
       boxShadow: {
         'board': '0 8px 30px -4px rgba(78, 45, 18, 0.12), 0 4px 12px -2px rgba(78, 45, 18, 0.08)',

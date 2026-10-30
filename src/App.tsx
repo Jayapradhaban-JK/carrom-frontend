@@ -215,6 +215,7 @@ export const App: React.FC = () => {
         {activeTab === 'register' && (
           <RegistrationForm
             tournament={tournament}
+            existingTeams={teams}
             onSuccess={handleRegistrationSuccess}
             onNavigate={(tab) => setActiveTab(tab as any)}
           />
