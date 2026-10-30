@@ -11,6 +11,10 @@ import {
   Quote,
   Users,
   RefreshCw,
+  Search,
+  Crown,
+  X,
+  Lock,
 } from 'lucide-react';
 import { teamsApi, usersApi } from '../api';
 import { Tournament, Team, TournamentUser } from '../types';
@@ -29,15 +33,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 }) => {
   // Form state
   const [teamName, setTeamName] = useState('');
-  const [player1UserId, setPlayer1UserId] = useState('');
-  const [player2UserId, setPlayer2UserId] = useState('');
   const [tagline, setTagline] = useState('');
   const [logoUrl, setLogoUrl] = useState<string>(PRESET_TEAM_LOGOS[0].url);
 
+  // Chosen Player IDs
+  const [player1UserId, setPlayer1UserId] = useState<string>('');
+  const [player2UserId, setPlayer2UserId] = useState<string>('');
+
   // Users Pool State
-  const [availableUsers, setAvailableUsers] = useState<TournamentUser[]>([]);
+  const [usersList, setUsersList] = useState<TournamentUser[]>([]);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
-  const [usersError, setUsersError] = useState<string | null>(null);
+  const [usersSearch, setUsersSearch] = useState<string>('');
+  const [userTab, setUserTab] = useState<'available' | 'chosen' | 'all'>('available');
 
   // Status & Validation State
   const [submitting, setSubmitting] = useState(false);
@@ -49,12 +56,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const loadUsers = async () => {
     try {
       setLoadingUsers(true);
-      setUsersError(null);
       const res = await usersApi.getAll();
-      setAvailableUsers(res.users || []);
+      setUsersList(res.users || []);
     } catch (err: any) {
       console.error('Failed to load eligible users:', err);
-      setUsersError('Could not fetch tournament users. Please refresh.');
     } finally {
       setLoadingUsers(false);
     }
@@ -77,6 +82,42 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
   };
 
+  // Assign user to slot
+  const handleAssignUser = (user: TournamentUser, targetSlot?: 1 | 2) => {
+    setError(null);
+    if (user.is_registered) return;
+
+    if (targetSlot === 1) {
+      if (player2UserId === user.id) setPlayer2UserId('');
+      setPlayer1UserId(user.id);
+      return;
+    }
+    if (targetSlot === 2) {
+      if (player1UserId === user.id) setPlayer1UserId('');
+      setPlayer2UserId(user.id);
+      return;
+    }
+
+    // Auto-fill empty slot
+    if (!player1UserId) {
+      if (player2UserId === user.id) setPlayer2UserId('');
+      setPlayer1UserId(user.id);
+    } else if (!player2UserId && player1UserId !== user.id) {
+      setPlayer2UserId(user.id);
+    } else if (player1UserId === user.id) {
+      setPlayer1UserId('');
+    } else if (player2UserId === user.id) {
+      setPlayer2UserId('');
+    } else {
+      setPlayer2UserId(user.id);
+    }
+  };
+
+  const handleRemoveSlot = (slot: 1 | 2) => {
+    if (slot === 1) setPlayer1UserId('');
+    if (slot === 2) setPlayer2UserId('');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -90,12 +131,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
 
     if (!player1UserId) {
-      setError('Please select Player 1 (Captain).');
+      setError('Please select Player 1 (Captain) from the users list on the side.');
       return;
     }
 
     if (!player2UserId) {
-      setError('Please select Player 2.');
+      setError('Please select Player 2 from the users list on the side.');
       return;
     }
 
@@ -104,11 +145,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
       return;
     }
 
-    const p1 = availableUsers.find((u) => u.id === player1UserId);
-    const p2 = availableUsers.find((u) => u.id === player2UserId);
+    const p1 = usersList.find((u) => u.id === player1UserId);
+    const p2 = usersList.find((u) => u.id === player2UserId);
 
     if (!p1 || !p2) {
-      setError('Selected users are invalid or no longer available.');
+      setError('Selected users are invalid or no longer found.');
       return;
     }
 
@@ -173,12 +214,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         </p>
         <div className="flex justify-center gap-3">
           <button
+            type="button"
             onClick={() => onNavigate('fixtures')}
             className="px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-600 text-white hover:bg-amber-500 transition shadow-sm"
           >
             See Fixtures &amp; Bracket
           </button>
           <button
+            type="button"
             onClick={() => onNavigate('teams')}
             className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-stone-800 text-white hover:bg-stone-700 transition"
           >
@@ -243,17 +286,19 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         </div>
 
         <p className="text-xs text-stone-500 mb-6">
-          Your 2-player team is locked in. Click below to view all registered teams or the fixtures bracket.
+          Your 2-player team is locked in. Click below to view all registered teams or check the fixtures bracket.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-3">
           <button
+            type="button"
             onClick={handleResetForm}
             className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-stone-100 text-stone-800 hover:bg-stone-200 transition"
           >
             Register Another Team
           </button>
           <button
+            type="button"
             onClick={() => onNavigate('teams')}
             className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm"
           >
@@ -265,273 +310,446 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     );
   }
 
-  const unassignedCount = availableUsers.filter((u) => !u.is_registered).length;
+  // Selected player user objects
+  const player1User = usersList.find((u) => u.id === player1UserId);
+  const player2User = usersList.find((u) => u.id === player2UserId);
+
+  // Available vs registered
+  const availableUsers = usersList.filter((u) => !u.is_registered);
+  const registeredUsers = usersList.filter((u) => u.is_registered);
+
+  // Filtered users for side directory
+  const filteredUsers = usersList.filter((u) => {
+    if (userTab === 'available' && u.is_registered) return false;
+    if (userTab === 'chosen' && !u.is_registered) return false;
+    if (!usersSearch.trim()) return true;
+    const term = usersSearch.toLowerCase();
+    return (
+      u.name.toLowerCase().includes(term) ||
+      (u.employee_id && u.employee_id.toLowerCase().includes(term)) ||
+      (u.department && u.department.toLowerCase().includes(term)) ||
+      (u.registered_team?.team_name && u.registered_team.team_name.toLowerCase().includes(term))
+    );
+  });
 
   return (
-    <div className="max-w-xl mx-auto animate-fadeIn">
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm relative">
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            2-Player Team Entry
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
-            Register Your Team
-          </h2>
-          <p className="text-xs sm:text-sm text-stone-600 mt-1">
-            Select eligible players from the tournament user pool. Duplication is strictly prevented.
-          </p>
-        </div>
-
-        {/* Warning if no users added yet */}
-        {!loadingUsers && availableUsers.length === 0 && (
-          <div className="mb-5 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-bold">No Eligible Users Found</p>
-              <p className="text-xs text-amber-800 mt-0.5">
-                The tournament administrator must add users in the <strong>Admin &gt; Users</strong> tab first before teams can register.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Available users info badge */}
-        {!loadingUsers && availableUsers.length > 0 && (
-          <div className="mb-4 flex items-center justify-between text-xs px-3.5 py-2 rounded-xl bg-stone-50 border border-stone-200 text-stone-600">
-            <span className="flex items-center gap-1.5 font-medium">
-              <Users className="w-4 h-4 text-amber-600" />
-              Eligible Tournament Users
-            </span>
-            <span className="font-bold text-amber-700">
-              {unassignedCount} available of {availableUsers.length} total
-            </span>
-          </div>
-        )}
-
-        {error && (
-          <div className="mb-5 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5 animate-shake">
-            <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-bold">Registration Error</p>
-              <p className="text-xs text-rose-700 mt-0.5">{error}</p>
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* 1. Team Name */}
+    <div className="animate-fadeIn">
+      {/* Side-by-Side 2-Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* ========================================================================= */}
+        {/* LEFT COLUMN: TEAM REGISTRATION FORM (lg:col-span-7) */}
+        {/* ========================================================================= */}
+        <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-stone-200 shadow-sm space-y-5">
           <div>
-            <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5">
-              Team Name <span className="text-rose-600">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              placeholder="e.g. Strike Kings, Red Queens, Board Masters"
-              className="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-semibold text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
-            />
+            <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-bold uppercase tracking-wider mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              2-Player Team Registration
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
+              Register Your Team
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
+              Enter your team details and select players from the Users Pool on the right.
+            </p>
           </div>
 
-          {/* 2 & 3. Select Players from Tournament Users */}
-          <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3.5">
-            <div className="flex items-center justify-between text-xs font-bold text-stone-900 uppercase tracking-wide">
-              <span className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-600" />
-                Select Team Members (2 Players)
-              </span>
-              <button
-                type="button"
-                onClick={loadUsers}
-                className="text-[11px] text-amber-700 hover:text-amber-800 flex items-center gap-1 font-semibold"
-                title="Refresh user list"
-              >
-                <RefreshCw className={`w-3 h-3 ${loadingUsers ? 'animate-spin' : ''}`} />
-                Refresh list
-              </button>
+          {error && (
+            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-shake">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold">Registration Error</p>
+                <p className="text-xs text-rose-700 mt-0.5">{error}</p>
+              </div>
             </div>
+          )}
 
-            {/* Player 1 (Captain) Dropdown */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* 1. Team Name */}
             <div>
-              <label className="block text-xs font-medium text-stone-700 mb-1">
-                Player 1 (Captain) <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5">
+                Team Name <span className="text-rose-600">*</span>
               </label>
-              <select
-                required
-                value={player1UserId}
-                onChange={(e) => setPlayer1UserId(e.target.value)}
-                disabled={loadingUsers || availableUsers.length === 0}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 text-sm font-semibold text-stone-900 bg-white outline-none cursor-pointer disabled:bg-stone-100 disabled:opacity-60"
-              >
-                <option value="">-- Choose Player 1 (Captain) --</option>
-                {availableUsers.map((u) => {
-                  const isP2 = u.id === player2UserId;
-                  const isAlreadyRegistered = u.is_registered;
-                  const disabled = isP2 || isAlreadyRegistered;
-
-                  let label = u.name;
-                  if (u.employee_id) label += ` [ID: ${u.employee_id}]`;
-                  if (u.department) label += ` - ${u.department}`;
-                  if (isAlreadyRegistered) {
-                    label += ` (Registered in ${u.registered_team?.team_name || 'Team'})`;
-                  } else if (isP2) {
-                    label += ' (Selected as Player 2)';
-                  }
-
-                  return (
-                    <option key={u.id} value={u.id} disabled={disabled}>
-                      {disabled ? '🚫 ' : '👤 '}
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            {/* Player 2 Dropdown */}
-            <div>
-              <label className="block text-xs font-medium text-stone-700 mb-1">
-                Player 2 <span className="text-rose-600">*</span>
-              </label>
-              <select
-                required
-                value={player2UserId}
-                onChange={(e) => setPlayer2UserId(e.target.value)}
-                disabled={loadingUsers || availableUsers.length === 0}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 text-sm font-semibold text-stone-900 bg-white outline-none cursor-pointer disabled:bg-stone-100 disabled:opacity-60"
-              >
-                <option value="">-- Choose Player 2 --</option>
-                {availableUsers.map((u) => {
-                  const isP1 = u.id === player1UserId;
-                  const isAlreadyRegistered = u.is_registered;
-                  const disabled = isP1 || isAlreadyRegistered;
-
-                  let label = u.name;
-                  if (u.employee_id) label += ` [ID: ${u.employee_id}]`;
-                  if (u.department) label += ` - ${u.department}`;
-                  if (isAlreadyRegistered) {
-                    label += ` (Registered in ${u.registered_team?.team_name || 'Team'})`;
-                  } else if (isP1) {
-                    label += ' (Selected as Player 1)';
-                  }
-
-                  return (
-                    <option key={u.id} value={u.id} disabled={disabled}>
-                      {disabled ? '🚫 ' : '👤 '}
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
-
-          {/* 4. Team Tagline */}
-          <div>
-            <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5 flex items-center justify-between">
-              <span>Team Tagline / Slogan</span>
-              <span className="text-[10px] text-stone-500 font-normal">Optional</span>
-            </label>
-            <div className="relative">
               <input
                 type="text"
-                value={tagline}
-                onChange={(e) => setTagline(e.target.value)}
-                placeholder="e.g. Pocketing wins, one coin at a time"
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
+                required
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                placeholder="e.g. Strike Kings, Red Queens, Board Masters"
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 text-sm font-semibold text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
               />
-              <Quote className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
-            </div>
-          </div>
-
-          {/* 5. Team Logo */}
-          <div className="pt-1">
-            <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-2">
-              Team Logo / Avatar
-            </label>
-
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-200">
-              <div className="w-14 h-14 rounded-2xl bg-white border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
-                {logoUrl ? (
-                  <img
-                    src={logoUrl}
-                    alt="Logo preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <ImageIcon className="w-6 h-6 text-stone-400" />
-                )}
-              </div>
-
-              <div className="flex-1 space-y-1">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept="image/*"
-                  onChange={handleImageFileChange}
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm"
-                >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Upload Logo from Device</span>
-                </button>
-                <p className="text-[10px] text-stone-500">
-                  Pick any image or choose a preset below.
-                </p>
-              </div>
             </div>
 
-            {/* Quick Carrom Coin Presets */}
-            <div className="flex items-center gap-2 mt-2.5 overflow-x-auto pb-1 scrollbar-none">
-              <span className="text-[10px] text-stone-400 font-bold uppercase shrink-0">
-                Presets:
-              </span>
-              {PRESET_TEAM_LOGOS.map((preset) => (
-                <button
-                  key={preset.name}
-                  type="button"
-                  onClick={() => setLogoUrl(preset.url)}
-                  className={`w-8 h-8 rounded-full border-2 p-0.5 transition shrink-0 ${
-                    logoUrl === preset.url
-                      ? 'border-amber-600 scale-110 shadow-md ring-2 ring-amber-400/40'
-                      : 'border-stone-300 hover:border-stone-500 opacity-70 hover:opacity-100'
+            {/* 2. Selected Roster Slots (Player 1 Captain & Player 2) */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-stone-800 uppercase tracking-wide">
+                <span>Selected Players (2 Persons)</span>
+                <span className="text-[11px] text-amber-700 font-semibold normal-case">
+                  {(player1UserId ? 1 : 0) + (player2UserId ? 1 : 0)} of 2 chosen
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Slot 1: Player 1 (Captain) */}
+                <div
+                  className={`p-3.5 rounded-2xl border-2 transition ${
+                    player1User
+                      ? 'border-amber-500 bg-amber-50/50 shadow-sm'
+                      : 'border-dashed border-stone-300 bg-stone-50/60'
                   }`}
-                  title={preset.name}
                 >
-                  <img
-                    src={preset.url}
-                    alt={preset.name}
-                    className="w-full h-full rounded-full"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-bold text-amber-800 flex items-center gap-1 uppercase">
+                      <Crown className="w-3.5 h-3.5 text-amber-600" />
+                      Player 1 (Captain)
+                    </span>
+                    {player1User && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSlot(1)}
+                        className="p-1 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-white transition"
+                        title="Remove Player 1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
 
-          {/* Submit Registration Button */}
-          <div className="pt-2">
+                  {player1User ? (
+                    <div>
+                      <p className="font-extrabold text-sm text-stone-900">{player1User.name}</p>
+                      <p className="text-[11px] text-stone-500">
+                        {player1User.employee_id ? `ID: ${player1User.employee_id}` : ''}
+                        {player1User.department ? ` • ${player1User.department}` : ''}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-stone-400 italic py-2">
+                      Click <strong>+ Captain</strong> on any available user on the right
+                    </p>
+                  )}
+                </div>
+
+                {/* Slot 2: Player 2 */}
+                <div
+                  className={`p-3.5 rounded-2xl border-2 transition ${
+                    player2User
+                      ? 'border-amber-500 bg-amber-50/50 shadow-sm'
+                      : 'border-dashed border-stone-300 bg-stone-50/60'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-bold text-stone-700 flex items-center gap-1 uppercase">
+                      <Users className="w-3.5 h-3.5 text-stone-500" />
+                      Player 2
+                    </span>
+                    {player2User && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSlot(2)}
+                        className="p-1 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-white transition"
+                        title="Remove Player 2"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {player2User ? (
+                    <div>
+                      <p className="font-extrabold text-sm text-stone-900">{player2User.name}</p>
+                      <p className="text-[11px] text-stone-500">
+                        {player2User.employee_id ? `ID: ${player2User.employee_id}` : ''}
+                        {player2User.department ? ` • ${player2User.department}` : ''}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-stone-400 italic py-2">
+                      Click <strong>+ Player 2</strong> on any available user on the right
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Team Tagline */}
+            <div>
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5 flex items-center justify-between">
+                <span>Team Tagline / Slogan</span>
+                <span className="text-[10px] text-stone-500 font-normal">Optional</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={tagline}
+                  onChange={(e) => setTagline(e.target.value)}
+                  placeholder="e.g. Pocketing wins, one coin at a time"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
+                />
+                <Quote className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+              </div>
+            </div>
+
+            {/* 4. Team Logo */}
+            <div>
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-2">
+                Team Logo / Avatar
+              </label>
+
+              <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-2xl border border-stone-200">
+                <div className="w-12 h-12 rounded-2xl bg-white border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt="Logo preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <ImageIcon className="w-5 h-5 text-stone-400" />
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-1">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm flex items-center gap-1.5"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload Logo</span>
+                  </button>
+                  <p className="text-[10px] text-stone-500">Or pick a coin preset:</p>
+                </div>
+              </div>
+
+              {/* Quick Carrom Coin Presets */}
+              <div className="flex items-center gap-2 mt-2 overflow-x-auto pb-1 scrollbar-none">
+                {PRESET_TEAM_LOGOS.map((preset) => (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => setLogoUrl(preset.url)}
+                    className={`w-7 h-7 rounded-full border p-0.5 transition shrink-0 ${
+                      logoUrl === preset.url
+                        ? 'border-amber-600 scale-110 shadow-sm ring-2 ring-amber-400/40'
+                        : 'border-stone-300 opacity-70 hover:opacity-100'
+                    }`}
+                    title={preset.name}
+                  >
+                    <img
+                      src={preset.url}
+                      alt={preset.name}
+                      className="w-full h-full rounded-full"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 5. Submit Registration Button */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={submitting || !player1UserId || !player2UserId}
+                className="w-full py-3.5 px-6 rounded-2xl text-sm sm:text-base font-extrabold text-white bg-amber-600 hover:bg-amber-500 active:scale-[0.99] transition shadow-md hover:shadow-amber-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {submitting ? (
+                  <span>Registering 2-Player Team...</span>
+                ) : (
+                  <>
+                    <UserPlus className="w-5 h-5" />
+                    <span>Register Team</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* RIGHT COLUMN: TOURNAMENT USERS POOL DIRECTORY (lg:col-span-5) */}
+        {/* ========================================================================= */}
+        <div className="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 border border-stone-200 shadow-sm space-y-4 lg:sticky lg:top-4">
+          <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-amber-600" />
+              <h3 className="text-sm font-black text-stone-900 uppercase tracking-wide">
+                Users Directory
+              </h3>
+            </div>
+
             <button
-              type="submit"
-              disabled={submitting || loadingUsers}
-              className="w-full py-3.5 px-6 rounded-2xl text-sm sm:text-base font-extrabold text-white bg-amber-600 hover:bg-amber-500 active:scale-[0.99] transition shadow-md hover:shadow-amber-600/30 flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+              type="button"
+              onClick={loadUsers}
+              className="text-[11px] text-stone-500 hover:text-stone-800 flex items-center gap-1 font-medium"
+              title="Refresh users pool"
             >
-              {submitting ? (
-                <span>Registering 2-Player Team...</span>
-              ) : (
-                <>
-                  <UserPlus className="w-5 h-5" />
-                  <span>Register Team</span>
-                </>
-              )}
+              <RefreshCw className={`w-3 h-3 ${loadingUsers ? 'animate-spin' : ''}`} />
+              Refresh
             </button>
           </div>
-        </form>
+
+          {/* Sub-Tabs: Available vs In Team vs All */}
+          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setUserTab('available')}
+              className={`flex-1 py-1.5 rounded-lg transition text-center ${
+                userTab === 'available'
+                  ? 'bg-white text-emerald-800 shadow-sm font-bold'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              🟢 Available ({availableUsers.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setUserTab('chosen')}
+              className={`flex-1 py-1.5 rounded-lg transition text-center ${
+                userTab === 'chosen'
+                  ? 'bg-white text-amber-900 shadow-sm font-bold'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              🔒 In Team ({registeredUsers.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setUserTab('all')}
+              className={`px-2.5 py-1.5 rounded-lg transition text-center ${
+                userTab === 'all'
+                  ? 'bg-white text-stone-900 shadow-sm font-bold'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              All ({usersList.length})
+            </button>
+          </div>
+
+          {/* Search box */}
+          <div className="relative">
+            <input
+              type="text"
+              value={usersSearch}
+              onChange={(e) => setUsersSearch(e.target.value)}
+              placeholder="Search by name, ID, team..."
+              className="w-full pl-8 pr-3 py-2 rounded-xl border border-stone-300 text-xs bg-stone-50 outline-none focus:border-amber-500"
+            />
+            <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-2.5" />
+          </div>
+
+          {/* Instruction hint */}
+          <p className="text-[11px] text-stone-500 italic">
+            Click <strong>+ Captain</strong> or <strong>+ Player 2</strong> on an available person to select them.
+          </p>
+
+          {/* Scrollable List of User Cards */}
+          <div className="max-h-[460px] overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map((user) => {
+                const isP1 = user.id === player1UserId;
+                const isP2 = user.id === player2UserId;
+                const isSelectedInCurrent = isP1 || isP2;
+                const isAlreadyInTeam = user.is_registered;
+
+                return (
+                  <div
+                    key={user.id}
+                    className={`p-3 rounded-2xl border transition flex items-center justify-between gap-2 ${
+                      isSelectedInCurrent
+                        ? 'bg-amber-100/80 border-amber-400 shadow-sm'
+                        : isAlreadyInTeam
+                        ? 'bg-stone-50 border-stone-200 opacity-60'
+                        : 'bg-white border-stone-200 hover:border-amber-400 hover:bg-amber-50/30 shadow-sm'
+                    }`}
+                  >
+                    {/* User Info */}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
+                          isP1
+                            ? 'bg-amber-600 text-white'
+                            : isP2
+                            ? 'bg-stone-800 text-white'
+                            : isAlreadyInTeam
+                            ? 'bg-stone-300 text-stone-600'
+                            : 'bg-emerald-100 text-emerald-800'
+                        }`}
+                      >
+                        {isP1 ? '👑' : user.name.charAt(0).toUpperCase()}
+                      </div>
+
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-stone-900 truncate">
+                          {user.name}
+                        </p>
+                        <p className="text-[10px] text-stone-500 truncate">
+                          {user.employee_id ? `ID: ${user.employee_id}` : ''}
+                          {user.department ? ` • ${user.department}` : ''}
+                          {isAlreadyInTeam && user.registered_team && (
+                            <span className="text-amber-800 font-semibold block truncate">
+                              Team: {user.registered_team.team_name}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Quick action buttons */}
+                    <div className="flex items-center gap-1 shrink-0">
+                      {isAlreadyInTeam ? (
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-stone-500 bg-stone-200 px-2 py-1 rounded-lg">
+                          <Lock className="w-3 h-3" />
+                          <span>In Team</span>
+                        </span>
+                      ) : isSelectedInCurrent ? (
+                        <button
+                          type="button"
+                          onClick={() => handleAssignUser(user)}
+                          className="flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg border border-rose-200 transition"
+                        >
+                          <X className="w-3 h-3" />
+                          <span>Deselect</span>
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleAssignUser(user, 1)}
+                            className="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition"
+                            title="Assign as Player 1 (Captain)"
+                          >
+                            + Captain
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleAssignUser(user, 2)}
+                            className="px-2 py-1 rounded-lg text-[10px] font-bold bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 transition"
+                            title="Assign as Player 2"
+                          >
+                            + Player 2
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-stone-400 text-xs">
+                {usersList.length === 0
+                  ? 'No users added to the tournament pool yet.'
+                  : 'No users match your search or filter.'}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

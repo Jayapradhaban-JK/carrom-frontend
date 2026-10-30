@@ -96,7 +96,7 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-stone-100 text-stone-900 flex flex-col selection:bg-amber-500/20">
       {/* Top Bar with Admin switch */}
-      <div className="max-w-5xl mx-auto w-full px-4 pt-4 pb-2 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto w-full px-4 pt-4 pb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
           <span className="text-xs font-black tracking-wider uppercase text-stone-800">
@@ -150,7 +150,7 @@ export const App: React.FC = () => {
 
       {/* Main Top 3 Buttons on Plain Background (Register, Teams, Fixtures) */}
       {activeTab !== 'admin' && (
-        <div className="max-w-5xl mx-auto w-full px-4 pt-2 pb-6">
+        <div className="max-w-6xl mx-auto w-full px-4 pt-2 pb-6">
           <div className="flex items-center justify-center gap-3">
             <button
               type="button"
@@ -193,7 +193,7 @@ export const App: React.FC = () => {
 
       {/* Error alert if any connection issue */}
       {error && (
-        <div className="max-w-5xl mx-auto px-4 mb-4 w-full">
+        <div className="max-w-6xl mx-auto px-4 mb-4 w-full">
           <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
@@ -210,7 +210,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Form / Content Area */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 pb-12">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 pb-12">
         {/* TAB 1: REGISTER */}
         {activeTab === 'register' && (
           <RegistrationForm
