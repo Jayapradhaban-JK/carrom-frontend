@@ -20,6 +20,8 @@ import {
   Crown,
   Clock,
   Timer,
+  X,
+  Maximize2,
 } from 'lucide-react';
 import { Tournament, Team, Match, TournamentUser } from '../types';
 import { tournamentApi, teamsApi, fixturesApi, usersApi } from '../api';
@@ -59,6 +61,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [deadlineInput, setDeadlineInput] = useState<string>(initialDeadline);
   const [deadlineSaving, setDeadlineSaving] = useState(false);
   const [deadlineMsg, setDeadlineMsg] = useState<string | null>(null);
+
+  // Team logo popup preview
+  const [selectedLogoTeam, setSelectedLogoTeam] = useState<Team | null>(null);
+
+  // Sync bannerUrl when tournament updates
+  useEffect(() => {
+    setBannerUrl(tournament.banner_url || '');
+  }, [tournament.banner_url]);
+
+  // Keyboard accessibility: Close logo popup on ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedLogoTeam(null);
+      }
+    };
+    if (selectedLogoTeam) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedLogoTeam]);
 
   // --- TAB 2: FIXTURES MAKING STATE ---
   const [bannerUrl, setBannerUrl] = useState<string>(tournament.banner_url || '');
@@ -278,6 +301,96 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       setBannerLoading(false);
     }
   };
+
+  const renderBannerCard = () => (
+    <div className="bg-white rounded-lg p-6 sm:p-7 border border-stone-300 shadow-sm space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <ImageIcon className="w-4 h-4 text-amber-600" />
+            <h3 className="text-sm font-black text-stone-900 uppercase tracking-wide">
+              Tournament Championship Banner
+            </h3>
+          </div>
+          <p className="text-[11px] text-stone-500 mt-0.5">
+            Official banner displayed prominently across the portal (Register, Teams, and Fixtures).
+          </p>
+        </div>
+
+        {bannerSuccess && (
+          <span className="text-xs font-bold text-emerald-700 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-md flex items-center gap-1.5 animate-fadeIn">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Banner Updated!
+          </span>
+        )}
+      </div>
+
+      <div className="w-full h-40 sm:h-52 rounded-lg overflow-hidden border border-stone-300 bg-stone-900 relative flex items-center justify-center shadow-inner">
+        {bannerUrl ? (
+          <>
+            <img
+              src={bannerUrl}
+              alt="Banner preview"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
+              <span className="text-white text-xs font-bold drop-shadow">
+                Live Public Banner Preview
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleRemoveBanner}
+              className="absolute top-3 right-3 px-2.5 py-1.5 bg-black/75 hover:bg-rose-600 text-white rounded-md text-xs font-bold transition flex items-center gap-1.5 shadow-md cursor-pointer"
+              title="Remove banner"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Remove</span>
+            </button>
+          </>
+        ) : (
+          <div className="text-center p-6 text-stone-400">
+            <ImageIcon className="w-10 h-10 mx-auto mb-2 text-stone-500 opacity-60" />
+            <p className="text-xs font-bold text-stone-300">No Custom Banner Uploaded</p>
+            <p className="text-[11px] text-stone-400 mt-0.5">
+              Upload a landscape banner image to feature across the public portal.
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 pt-1">
+        <input
+          type="file"
+          ref={bannerFileInputRef}
+          accept="image/*"
+          onChange={handleBannerUpload}
+          className="hidden"
+        />
+        <button
+          type="button"
+          disabled={bannerLoading}
+          onClick={() => bannerFileInputRef.current?.click()}
+          className="flex items-center gap-2 px-4 py-2 rounded-md text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50 cursor-pointer"
+        >
+          <Upload className="w-3.5 h-3.5" />
+          <span>{bannerLoading ? 'Uploading Banner...' : 'Upload Banner'}</span>
+        </button>
+
+        <span className="text-xs text-stone-400 ml-2 font-medium">Or choose a preset:</span>
+        {PRESET_TOURNAMENT_BANNERS.map((preset) => (
+          <button
+            key={preset.name}
+            type="button"
+            onClick={() => handleSelectPresetBanner(preset.url)}
+            className="text-xs font-semibold px-2.5 py-1.5 rounded-md border border-stone-300 hover:border-amber-500 bg-stone-50 hover:bg-amber-50 text-stone-800 transition cursor-pointer"
+          >
+            {preset.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   // --- USERS ACTIONS ---
   const handleAddUser = async (e: React.FormEvent) => {
@@ -599,6 +712,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
           </div>
 
+          {/* Tournament Championship Banner (Upload & Management) */}
+          {renderBannerCard()}
+
           {/* Teams Search */}
           <div className="relative max-w-md">
             <input
@@ -624,16 +740,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-stone-50/60 px-3 rounded-md transition"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-300 bg-white shrink-0 flex items-center justify-center shadow-sm">
+                        <div
+                          onClick={() => setSelectedLogoTeam(team)}
+                          className="w-12 h-12 rounded-lg overflow-hidden border border-stone-300 bg-white shrink-0 flex items-center justify-center shadow-xs cursor-pointer hover:border-amber-500 hover:ring-2 hover:ring-amber-500/30 transition group relative"
+                          title="Click to view team logo"
+                        >
                           {team.logo_url ? (
                             <img
                               src={team.logo_url}
                               alt={team.team_name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover group-hover:scale-105 transition"
                             />
                           ) : (
-                            <div className="w-4 h-4 rounded-full bg-amber-600" />
+                            <div className="w-full h-full flex items-center justify-center font-black text-amber-800 bg-amber-50 text-xs">
+                              {team.team_name.slice(0, 2).toUpperCase()}
+                            </div>
                           )}
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <Maximize2 className="w-3.5 h-3.5 text-white" />
+                          </div>
                         </div>
 
                         <div>
@@ -845,81 +970,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           )}
 
           {/* Tournament Banner Card */}
-          <div className="bg-white rounded-lg p-6 sm:p-8 border border-stone-300 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-black text-stone-900">
-                  Tournament Banner
-                </h3>
-                <p className="text-xs text-stone-600">
-                  Header banner displayed on the Fixtures page.
-                </p>
-              </div>
-
-              {bannerSuccess && (
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded flex items-center gap-1 animate-fadeIn">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  Banner Updated!
-                </span>
-              )}
-            </div>
-
-            <div className="w-full h-36 rounded-md overflow-hidden border border-stone-300 bg-stone-50 relative flex items-center justify-center">
-              {bannerUrl ? (
-                <>
-                  <img
-                    src={bannerUrl}
-                    alt="Banner preview"
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleRemoveBanner}
-                    className="absolute top-3 right-3 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-md text-xs font-bold transition flex items-center gap-1"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Remove</span>
-                  </button>
-                </>
-              ) : (
-                <div className="text-center p-4 text-stone-400">
-                  <ImageIcon className="w-8 h-8 mx-auto mb-1 opacity-50" />
-                  <p className="text-xs font-semibold">No custom banner</p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <input
-                type="file"
-                ref={bannerFileInputRef}
-                accept="image/*"
-                onChange={handleBannerUpload}
-                className="hidden"
-              />
-              <button
-                type="button"
-                disabled={bannerLoading}
-                onClick={() => bannerFileInputRef.current?.click()}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                <span>{bannerLoading ? 'Uploading...' : 'Upload Banner'}</span>
-              </button>
-
-              <span className="text-xs text-stone-400 ml-2">Presets:</span>
-              {PRESET_TOURNAMENT_BANNERS.map((preset) => (
-                <button
-                  key={preset.name}
-                  type="button"
-                  onClick={() => handleSelectPresetBanner(preset.url)}
-                  className="text-xs font-semibold px-2.5 py-1.5 rounded-md border border-stone-300 hover:border-amber-500 bg-stone-50 text-stone-800 transition"
-                >
-                  {preset.name}
-                </button>
-              ))}
-            </div>
-          </div>
+          {renderBannerCard()}
         </div>
       )}
 
@@ -1223,6 +1274,85 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         }}
         matchesCount={matches.length}
       />
+
+      {/* Team Logo Preview Popup Modal */}
+      {selectedLogoTeam && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setSelectedLogoTeam(null)}
+        >
+          <div
+            className="bg-white rounded-lg border-2 border-stone-300 shadow-2xl max-w-sm sm:max-w-md w-full overflow-hidden animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                  {selectedLogoTeam.registration_number}
+                </span>
+                <h3 className="font-black text-base text-stone-900 truncate">
+                  {selectedLogoTeam.team_name}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedLogoTeam(null)}
+                className="p-1.5 rounded-md text-stone-400 hover:text-stone-700 hover:bg-stone-200 transition cursor-pointer"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: Large Image Display */}
+            <div className="p-6 bg-stone-100/70 flex flex-col items-center justify-center">
+              <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-lg bg-white border-2 border-stone-300 shadow-md overflow-hidden flex items-center justify-center p-2 relative">
+                {selectedLogoTeam.logo_url ? (
+                  <img
+                    src={selectedLogoTeam.logo_url}
+                    alt={`${selectedLogoTeam.team_name} Logo`}
+                    className="w-full h-full object-contain rounded-md"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-amber-50 text-amber-900 rounded-md">
+                    <span className="text-6xl font-black mb-2">
+                      {selectedLogoTeam.team_name.slice(0, 2).toUpperCase()}
+                    </span>
+                    <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                      Default Team Crest
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Team Tagline */}
+              {selectedLogoTeam.tagline && (
+                <p className="mt-4 text-xs sm:text-sm text-amber-900 font-semibold italic text-center px-4 bg-amber-50 py-1.5 rounded-md border border-amber-200 w-full">
+                  "{selectedLogoTeam.tagline}"
+                </p>
+              )}
+            </div>
+
+            {/* Modal Footer: Team Details & Close */}
+            <div className="px-5 py-3.5 bg-stone-50 border-t border-stone-200 flex items-center justify-between gap-3 text-xs">
+              <div className="text-stone-600 truncate">
+                <span className="font-bold text-stone-900">Captain:</span>{" "}
+                <span className="font-semibold text-stone-800">
+                  {selectedLogoTeam.captain_name}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedLogoTeam(null)}
+                className="px-4 py-1.5 rounded-md text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
