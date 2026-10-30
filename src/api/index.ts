@@ -6,6 +6,7 @@ import {
   LeaderboardData,
   Tournament,
   AdminUser,
+  TournamentUser,
 } from '../types';
 
 export const tournamentApi = {
@@ -174,6 +175,49 @@ export const authApi = {
   },
   getMe: async (): Promise<AdminUser> => {
     const res = await apiClient.get('/admin/me');
+    return res.data;
+  },
+};
+
+export const usersApi = {
+  getAll: async (search?: string): Promise<{
+    total: number;
+    availableCount: number;
+    registeredCount: number;
+    users: TournamentUser[];
+  }> => {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    const res = await apiClient.get<{
+      total: number;
+      availableCount: number;
+      registeredCount: number;
+      users: TournamentUser[];
+    }>(`/users?${params.toString()}`);
+    return res.data;
+  },
+
+  create: async (data: {
+    name: string;
+    employee_id?: string;
+    department?: string;
+    email?: string;
+  }): Promise<TournamentUser> => {
+    const res = await apiClient.post<TournamentUser>('/admin/users', data);
+    return res.data;
+  },
+
+  bulkCreate: async (names: string[]): Promise<{
+    createdCount: number;
+    skippedCount: number;
+    totalUsers: number;
+  }> => {
+    const res = await apiClient.post('/admin/users/bulk', { names });
+    return res.data;
+  },
+
+  delete: async (id: string): Promise<{ success: boolean; message: string }> => {
+    const res = await apiClient.delete<{ success: boolean; message: string }>(`/admin/users/${id}`);
     return res.data;
   },
 };

@@ -152,3 +152,21 @@ export interface AdminUser {
   username: string;
   role: string;
 }
+
+export interface TournamentUser {
+  id: string;
+  name: string;
+  normalized_name: string;
+  employee_id?: string;
+  department?: string;
+  email?: string;
+  created_at: string;
+  is_registered: boolean;
+  registered_team?: {
+    id: string;
+    team_name: string;
+    registration_number: string;
+  } | null;
+  is_captain?: boolean;
+}
+
