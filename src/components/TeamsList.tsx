@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   User,
@@ -16,6 +16,8 @@ import {
   Trash2,
   AlertTriangle,
   Calendar,
+  Maximize2,
+  X,
 } from "lucide-react";
 import { Team, Tournament, Match } from "../types";
 import { teamsApi } from "../api";
@@ -42,6 +44,20 @@ export const TeamsList: React.FC<TeamsListProps> = ({
   const [sortBy, setSortBy] = useState<"registration" | "name">("registration");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [menuOpenTeamId, setMenuOpenTeamId] = useState<string | null>(null);
+  const [selectedLogoTeam, setSelectedLogoTeam] = useState<Team | null>(null);
+
+  // Keyboard accessibility: Close logo popup on ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedLogoTeam(null);
+      }
+    };
+    if (selectedLogoTeam) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedLogoTeam]);
 
   // Admin Edit modal state
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
@@ -349,18 +365,25 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                   {/* Team Identity Row: Avatar + Name/Tagline + Registered Badge */}
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-14 h-14 rounded-lg bg-stone-100 border border-stone-200 overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+                      <div
+                        onClick={() => setSelectedLogoTeam(team)}
+                        className="w-14 h-14 rounded-lg bg-stone-100 border border-stone-200 overflow-hidden shrink-0 flex items-center justify-center shadow-xs cursor-pointer hover:border-amber-500 hover:ring-2 hover:ring-amber-500/30 transition group relative"
+                        title="Click to view full team logo"
+                      >
                         {team.logo_url ? (
                           <img
                             src={team.logo_url}
                             alt={team.team_name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center font-black text-amber-800 bg-amber-50 text-base">
                             {team.team_name.slice(0, 2).toUpperCase()}
                           </div>
                         )}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                          <Maximize2 className="w-4 h-4 text-white drop-shadow" />
+                        </div>
                       </div>
 
                       <div className="min-w-0">
@@ -587,6 +610,85 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                 className="px-5 py-2 rounded-md text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition shadow-sm disabled:opacity-60"
               >
                 {deleteLoading ? "Deleting..." : "Confirm Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Team Logo Preview Popup Modal */}
+      {selectedLogoTeam && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setSelectedLogoTeam(null)}
+        >
+          <div
+            className="bg-white rounded-lg border-2 border-stone-300 shadow-2xl max-w-sm sm:max-w-md w-full overflow-hidden animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                  {selectedLogoTeam.registration_number}
+                </span>
+                <h3 className="font-black text-base text-stone-900 truncate">
+                  {selectedLogoTeam.team_name}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedLogoTeam(null)}
+                className="p-1.5 rounded-md text-stone-400 hover:text-stone-700 hover:bg-stone-200 transition cursor-pointer"
+                title="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: Large Image Display */}
+            <div className="p-6 bg-stone-100/70 flex flex-col items-center justify-center">
+              <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-lg bg-white border-2 border-stone-300 shadow-md overflow-hidden flex items-center justify-center p-2 relative">
+                {selectedLogoTeam.logo_url ? (
+                  <img
+                    src={selectedLogoTeam.logo_url}
+                    alt={`${selectedLogoTeam.team_name} Logo`}
+                    className="w-full h-full object-contain rounded-md"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-amber-50 text-amber-900 rounded-md">
+                    <span className="text-6xl font-black mb-2">
+                      {selectedLogoTeam.team_name.slice(0, 2).toUpperCase()}
+                    </span>
+                    <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                      Default Team Crest
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Team Tagline */}
+              {selectedLogoTeam.tagline && (
+                <p className="mt-4 text-xs sm:text-sm text-amber-900 font-semibold italic text-center px-4 bg-amber-50 py-1.5 rounded-md border border-amber-200 w-full">
+                  "{selectedLogoTeam.tagline}"
+                </p>
+              )}
+            </div>
+
+            {/* Modal Footer: Team Details & Close */}
+            <div className="px-5 py-3.5 bg-stone-50 border-t border-stone-200 flex items-center justify-between gap-3 text-xs">
+              <div className="text-stone-600 truncate">
+                <span className="font-bold text-stone-900">Captain:</span>{" "}
+                <span className="font-semibold text-stone-800">
+                  {selectedLogoTeam.captain_name}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedLogoTeam(null)}
+                className="px-4 py-1.5 rounded-md text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm cursor-pointer"
+              >
+                Close
               </button>
             </div>
           </div>

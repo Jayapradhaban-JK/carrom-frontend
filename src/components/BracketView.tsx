@@ -40,53 +40,38 @@ export const BracketView: React.FC<BracketViewProps> = ({
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* 1. TOURNAMENT BANNER */}
-      {tournament.banner_url ? (
-        <div className="w-full h-44 sm:h-64 rounded-lg overflow-hidden shadow-board border-2 border-wood-700 relative group">
-          <img
-            src={tournament.banner_url}
-            alt="Tournament Banner"
-            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-wood-950/90 via-wood-900/40 to-transparent flex flex-col justify-end p-5 sm:p-8">
-            <span className="text-amber-400 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5 mb-1">
-              <Sparkles className="w-3.5 h-3.5" />
-              Official Championship Banner
+      {/* 1. KNOCKOUT FIXTURES HEADER BAR */}
+      <div className="bg-white rounded-lg p-5 sm:p-6 border border-stone-200/90 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className="text-amber-700 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5">
+              <Flame className="w-3.5 h-3.5 text-amber-500" />
+              Championship Knockout Tree
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-ivory-50 tracking-tight">
-              {tournament.name}
-            </h2>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-black/50 border border-amber-500/40 px-2.5 py-1 rounded-md">
-                <Calendar className="w-3.5 h-3.5 text-amber-400" />
-                Tournament Date: 05 Nov 2026 (05-11-2026)
-              </span>
-            </div>
+            <span className="text-stone-300">•</span>
+            <span className="text-[11px] font-bold text-amber-900 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded">
+              05-11-2026
+            </span>
           </div>
+          <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
+            Knockout Architecture &amp; Fixtures
+          </h2>
+          <p className="text-xs sm:text-sm text-stone-500 mt-0.5">
+            Talent Takeaways Infotech PVT LTD &bull; Follow teams advancing from preliminary rounds to the championship final.
+          </p>
         </div>
-      ) : (
-        /* Default Carrom Banner if no custom banner uploaded */
-        <div className="bg-gradient-to-r from-wood-900 via-wood-800 to-wood-900 rounded-lg p-6 sm:p-8 border-2 border-wood-700 shadow-board relative overflow-hidden">
-          <div className="relative z-10 max-w-2xl">
-            <div className="flex items-center justify-between flex-wrap gap-2 mb-1.5">
-              <span className="text-amber-400 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5">
-                <Flame className="w-4 h-4 text-amber-500" />
-                Tournament Fixtures &amp; Connected Bracket
-              </span>
-              <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-300 bg-black/40 border border-amber-400/40 px-2.5 py-0.5 rounded-md">
-                <Calendar className="w-3 h-3 text-amber-400" />
-                Event: 05-11-2026
-              </span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-ivory-50 tracking-tight mb-2">
-              {tournament.name}
-            </h2>
-            <p className="text-xs sm:text-sm text-wood-200">
-              Talent Takeaways Infotech PVT LTD &bull; Knockout architecture from preliminary rounds to the championship final.
-            </p>
-          </div>
-        </div>
-      )}
+
+        {isAdmin && matches.length > 0 && onDeleteFixtures && (
+          <button
+            type="button"
+            onClick={onDeleteFixtures}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition shadow-xs shrink-0"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Reset Fixtures</span>
+          </button>
+        )}
+      </div>
 
       {/* 2. CHAMPION BANNER PODIUM */}
       {champion && (

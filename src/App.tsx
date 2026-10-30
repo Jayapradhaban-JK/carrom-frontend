@@ -9,6 +9,7 @@ import {
   AlertCircle,
   RefreshCw,
   Calendar,
+  Sparkles,
 } from "lucide-react";
 import { useTournamentData } from "./hooks/useTournamentData";
 import { RegistrationForm } from "./components/RegistrationForm";
@@ -218,6 +219,38 @@ export const App: React.FC = () => {
             >
               Fixtures
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Official Championship Banner (Visible across public portal when uploaded by admin) */}
+      {tournament.banner_url && activeTab !== "admin" && (
+        <div className="max-w-6xl mx-auto w-full px-4 mb-5 animate-fadeIn">
+          <div className="w-full h-44 sm:h-56 md:h-64 rounded-lg overflow-hidden border-2 border-stone-300 shadow-md relative group bg-stone-900">
+            <img
+              src={tournament.banner_url}
+              alt="Official Championship Banner"
+              className="w-full h-full object-cover group-hover:scale-102 transition duration-700"
+            />
+            {/* Elegant gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-900/30 to-transparent flex flex-col justify-end p-5 sm:p-7">
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-amber-300 bg-black/60 border border-amber-500/40 px-2.5 py-0.5 rounded">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  Official Championship Banner
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-bold text-stone-200 bg-black/60 px-2.5 py-0.5 rounded border border-stone-700">
+                  Talent Takeaways Infotech PVT LTD
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-amber-200 bg-black/60 px-2.5 py-0.5 rounded border border-amber-600/40">
+                  <Calendar className="w-3 h-3 text-amber-400" />
+                  05-11-2026
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-sm">
+                {tournament.name}
+              </h2>
+            </div>
           </div>
         </div>
       )}
