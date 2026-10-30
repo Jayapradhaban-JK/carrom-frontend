@@ -260,7 +260,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
     try {
       setBannerLoading(true);
-      const dataUrl = await processImageFile(file, 1200, 400, 0.85);
+      const dataUrl = await processImageFile(file, 960, 320, 0.75, 75000);
       setBannerUrl(dataUrl);
 
       await tournamentApi.updateTournament({ banner_url: dataUrl });
@@ -268,7 +268,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       setTimeout(() => setBannerSuccess(false), 3000);
       onRefresh();
     } catch (err: any) {
-      alert(err.message || 'Failed to upload banner.');
+      if (err.response?.status === 413) {
+        alert('Image exceeds server payload limits. Please choose a smaller image.');
+      } else {
+        alert(err.response?.data?.message || err.message || 'Failed to upload banner.');
+      }
     } finally {
       setBannerLoading(false);
     }

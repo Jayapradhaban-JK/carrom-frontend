@@ -121,7 +121,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     if (!file) return;
 
     try {
-      const dataUrl = await processImageFile(file, 400, 400, 0.85);
+      const dataUrl = await processImageFile(file, 300, 300, 0.75, 50000);
       setLogoUrl(dataUrl);
       setError(null);
     } catch (err: any) {

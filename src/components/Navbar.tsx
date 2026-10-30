@@ -160,6 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </div>
           ) : (
+            /* Admin Login button commented out
             <button
               onClick={onOpenLogin}
               className="flex items-center gap-1.5 text-xs font-bold bg-wood-800 hover:bg-wood-700 text-amber-400 border border-amber-500/40 px-3 py-1.5 rounded-xl transition shadow-sm"
@@ -167,6 +168,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               <ShieldAlert className="w-3.5 h-3.5" />
               <span>Admin Login</span>
             </button>
+            */
+            null
           )}
         </div>
       </div>

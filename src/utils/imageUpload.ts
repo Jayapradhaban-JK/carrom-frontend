@@ -1,10 +1,12 @@
 // Utility to compress and convert client image files to optimized base64 Data URLs
+// Stays strictly under 75KB to prevent HTTP 413 Payload Too Large errors on any server
 
 export const processImageFile = (
   file: File,
-  maxWidth: number = 500,
-  maxHeight: number = 500,
-  quality: number = 0.85,
+  maxWidth: number = 800,
+  maxHeight: number = 400,
+  quality: number = 0.75,
+  maxBytes: number = 75000,
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) {
@@ -43,7 +45,32 @@ export const processImageFile = (
         }
 
         ctx.drawImage(img, 0, 0, width, height);
-        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+        // Iterative compression stepping down quality until under maxBytes
+        let currentQuality = quality;
+        let dataUrl = canvas.toDataURL('image/jpeg', currentQuality);
+
+        while (dataUrl.length > maxBytes && currentQuality > 0.25) {
+          currentQuality -= 0.1;
+          dataUrl = canvas.toDataURL('image/jpeg', currentQuality);
+        }
+
+        // If still over maxBytes, reduce canvas dimensions
+        if (dataUrl.length > maxBytes) {
+          let scale = 0.8;
+          while (dataUrl.length > maxBytes && scale > 0.3) {
+            const scaledCanvas = document.createElement('canvas');
+            scaledCanvas.width = Math.max(100, Math.round(width * scale));
+            scaledCanvas.height = Math.max(50, Math.round(height * scale));
+            const scaledCtx = scaledCanvas.getContext('2d');
+            if (scaledCtx) {
+              scaledCtx.drawImage(img, 0, 0, scaledCanvas.width, scaledCanvas.height);
+              dataUrl = scaledCanvas.toDataURL('image/jpeg', 0.65);
+            }
+            scale -= 0.15;
+          }
+        }
+
         resolve(dataUrl);
       };
 

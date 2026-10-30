@@ -167,6 +167,7 @@ export const App: React.FC = () => {
                 </button>
               </div>
             ) : (
+              /* Admin Login button commented out
               <button
                 type="button"
                 onClick={() => setIsLoginOpen(true)}
@@ -175,6 +176,8 @@ export const App: React.FC = () => {
                 <Lock className="w-3.5 h-3.5" />
                 <span>Admin Login</span>
               </button>
+              */
+              null
             )}
           </div>
         </div>
