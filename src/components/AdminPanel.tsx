@@ -446,6 +446,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <div className="space-y-6">
           <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+                  Talent Takeaways Infotech PVT LTD
+                </span>
+                <span className="text-[10px] font-bold text-stone-600 bg-stone-100 border border-stone-200 px-2 py-0.5 rounded">
+                  Event: 05-11-2026
+                </span>
+              </div>
               <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
                 Registration Teams
               </h2>

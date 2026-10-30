@@ -17,6 +17,7 @@ import {
   Lock,
   Clock,
   Timer,
+  Calendar,
 } from 'lucide-react';
 import { teamsApi, usersApi } from '../api';
 import { Tournament, Team, TournamentUser } from '../types';
@@ -302,12 +303,19 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </div>
 
           <span className="inline-block px-3 py-1 rounded text-xs font-black tracking-wider uppercase bg-amber-100 text-amber-800 mb-2">
-            Registration Begins Soon
+            Talent Takeaways Infotech PVT LTD
           </span>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mb-2">
-            Registration Opens In
+          <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight mb-1">
+            Carrom Championship 2026
           </h2>
+
+          <div className="flex items-center justify-center gap-1.5 mb-3">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-300 px-3 py-1 rounded-md">
+              <Calendar className="w-3.5 h-3.5 text-amber-700" />
+              Tournament Date: 5th November 2026 (05-11-2026)
+            </span>
+          </div>
 
           <p className="text-xs sm:text-sm text-stone-500 mb-8 max-w-sm mx-auto">
             Team registration is locked until the countdown completes. The registration form will unlock automatically.
@@ -505,9 +513,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         {/* ========================================================================= */}
         <div className="lg:col-span-7 bg-white rounded-lg p-6 sm:p-7 border-2 border-stone-200/90 shadow-sm space-y-5">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-bold uppercase tracking-wider mb-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              2-Player Team Registration
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-1">
+              <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                2-Player Team Registration
+              </div>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 bg-amber-50 border border-amber-300 px-2.5 py-0.5 rounded-md">
+                <Calendar className="w-3 h-3 text-amber-700" />
+                Event: 05-11-2026
+              </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
               Register Your Team

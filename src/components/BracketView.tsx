@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Award, CheckCircle2, Star, Sparkles, Image as ImageIcon, Flame, Trash2, Layers } from 'lucide-react';
+import { Trophy, Award, CheckCircle2, Star, Sparkles, Image as ImageIcon, Flame, Trash2, Layers, Calendar } from 'lucide-react';
 import { Match, Team, Tournament } from '../types';
 import { getTeamPlayers } from '../utils/teamUtils';
 
@@ -56,21 +56,33 @@ export const BracketView: React.FC<BracketViewProps> = ({
             <h2 className="text-2xl sm:text-4xl font-black text-ivory-50 tracking-tight">
               {tournament.name}
             </h2>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-black/50 border border-amber-500/40 px-2.5 py-1 rounded-md">
+                <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                Tournament Date: 05 Nov 2026 (05-11-2026)
+              </span>
+            </div>
           </div>
         </div>
       ) : (
         /* Default Carrom Banner if no custom banner uploaded */
         <div className="bg-gradient-to-r from-wood-900 via-wood-800 to-wood-900 rounded-lg p-6 sm:p-8 border-2 border-wood-700 shadow-board relative overflow-hidden">
           <div className="relative z-10 max-w-2xl">
-            <span className="text-amber-400 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5 mb-1.5">
-              <Flame className="w-4 h-4 text-amber-500" />
-              Tournament Fixtures &amp; Connected Bracket
-            </span>
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-1.5">
+              <span className="text-amber-400 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-amber-500" />
+                Tournament Fixtures &amp; Connected Bracket
+              </span>
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-300 bg-black/40 border border-amber-400/40 px-2.5 py-0.5 rounded-md">
+                <Calendar className="w-3 h-3 text-amber-400" />
+                Event: 05-11-2026
+              </span>
+            </div>
             <h2 className="text-2xl sm:text-4xl font-black text-ivory-50 tracking-tight mb-2">
               {tournament.name}
             </h2>
             <p className="text-xs sm:text-sm text-wood-200">
-              Interactive knockout architecture. Follow teams advancing from preliminary rounds to the championship final!
+              Talent Takeaways Infotech PVT LTD &bull; Knockout architecture from preliminary rounds to the championship final.
             </p>
           </div>
         </div>

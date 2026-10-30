@@ -15,6 +15,7 @@ import {
   Edit2,
   Trash2,
   AlertTriangle,
+  Calendar,
 } from "lucide-react";
 import { Team, Tournament, Match } from "../types";
 import { teamsApi } from "../api";
@@ -208,16 +209,20 @@ export const TeamsList: React.FC<TeamsListProps> = ({
         {/* Header with Search and Sort Controls */}
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pb-5 border-b border-stone-100">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
                 Registered Teams
               </h2>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
                 {teams.length} {teams.length === 1 ? "Team" : "Teams"}
               </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 bg-amber-50 border border-amber-300 px-2.5 py-0.5 rounded-md">
+                <Calendar className="w-3 h-3 text-amber-700" />
+                Tournament Date: 05-11-2026
+              </span>
             </div>
             <p className="text-xs sm:text-sm text-stone-500 mt-0.5">
-              Real-time roster of confirmed championship participants
+              Real-time roster of confirmed championship participants &bull; Talent Takeaways Infotech PVT LTD
             </p>
           </div>
 

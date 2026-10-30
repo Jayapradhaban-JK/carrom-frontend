@@ -105,10 +105,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
             </div>
           </div>
 
-          <div className="p-3 bg-wood-50 rounded-md border border-stone-200 text-[11px] text-wood-600 flex items-start gap-1.5">
-            <Info className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
-          </div>
-
           <button
             type="submit"
             disabled={loading}
