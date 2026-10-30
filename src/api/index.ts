@@ -48,6 +48,7 @@ export const teamsApi = {
     captain_name: string;
     contact_number?: string;
     player_names: string[];
+    player_user_ids?: string[];
     logo_url?: string;
     tagline?: string;
     substitutes?: string[];
@@ -63,6 +64,7 @@ export const teamsApi = {
       captain_name?: string;
       contact_number?: string;
       player_names?: string[];
+      player_user_ids?: string[];
       logo_url?: string;
       tagline?: string;
       substitutes?: string[];
