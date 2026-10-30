@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { teamsApi, usersApi } from '../api';
 import { Tournament, Team, TournamentUser } from '../types';
-import { processImageFile, PRESET_TEAM_LOGOS } from '../utils/imageUpload';
+import { processImageFile } from '../utils/imageUpload';
 
 interface RegistrationFormProps {
   tournament: Tournament;
@@ -38,7 +38,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   // Form state
   const [teamName, setTeamName] = useState('');
   const [tagline, setTagline] = useState('');
-  const [logoUrl, setLogoUrl] = useState<string>(PRESET_TEAM_LOGOS[0].url);
+  const [logoUrl, setLogoUrl] = useState<string>('');
 
   // Chosen Player IDs
   const [player1UserId, setPlayer1UserId] = useState<string>('');
@@ -249,7 +249,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setPlayer1UserId('');
     setPlayer2UserId('');
     setTagline('');
-    setLogoUrl(PRESET_TEAM_LOGOS[0].url);
+    setLogoUrl('');
     setRegisteredTeam(null);
     setError(null);
     loadUsers();
@@ -671,12 +671,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
             {/* 4. Team Logo */}
             <div>
-              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-2">
-                Team Logo / Avatar
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide mb-1.5 flex items-center justify-between">
+                <span>Team Logo / Avatar</span>
+                <span className="text-[10px] text-stone-500 font-normal">Optional</span>
               </label>
 
-              <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-md border border-stone-300">
-                <div className="w-12 h-12 rounded-md bg-white border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+              <div className="flex items-center gap-3.5 p-3.5 bg-stone-50 rounded-md border border-stone-300">
+                <div className="w-14 h-14 rounded-md bg-white border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
                   {logoUrl ? (
                     <img
                       src={logoUrl}
@@ -684,11 +685,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <ImageIcon className="w-5 h-5 text-stone-400" />
+                    <ImageIcon className="w-6 h-6 text-stone-400" />
                   )}
                 </div>
 
-                <div className="flex-1 space-y-1">
+                <div className="flex-1 space-y-1.5">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -696,39 +697,32 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     onChange={handleImageFileChange}
                     className="hidden"
                   />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-3 py-1.5 rounded-md text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm flex items-center gap-1.5"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>Upload Logo</span>
-                  </button>
-                  <p className="text-[10px] text-stone-500">Or pick a coin preset:</p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3.5 py-1.5 rounded-md text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{logoUrl ? 'Change Logo' : 'Upload Logo'}</span>
+                    </button>
+                    {logoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLogoUrl('');
+                          if (fileInputRef.current) fileInputRef.current.value = '';
+                        }}
+                        className="px-2.5 py-1.5 rounded-md text-xs font-semibold text-rose-700 hover:text-rose-800 hover:bg-rose-50 border border-rose-200 transition"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-stone-500">
+                    Upload PNG, JPG, or SVG (Max 5MB)
+                  </p>
                 </div>
-              </div>
-
-              {/* Quick Carrom Coin Presets */}
-              <div className="flex items-center gap-2 mt-2 overflow-x-auto pb-1 scrollbar-none">
-                {PRESET_TEAM_LOGOS.map((preset) => (
-                  <button
-                    key={preset.name}
-                    type="button"
-                    onClick={() => setLogoUrl(preset.url)}
-                    className={`w-7 h-7 rounded-full border p-0.5 transition shrink-0 ${
-                      logoUrl === preset.url
-                        ? 'border-amber-600 scale-110 shadow-sm ring-2 ring-amber-400/40'
-                        : 'border-stone-300 opacity-70 hover:opacity-100'
-                    }`}
-                    title={preset.name}
-                  >
-                    <img
-                      src={preset.url}
-                      alt={preset.name}
-                      className="w-full h-full rounded-full"
-                    />
-                  </button>
-                ))}
               </div>
             </div>
 

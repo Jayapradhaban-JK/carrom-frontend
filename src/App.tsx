@@ -229,6 +229,7 @@ export const App: React.FC = () => {
         {activeTab === "teams" && (
           <TeamsList
             teams={teams}
+            matches={matches}
             tournament={tournament}
             isAdmin={isAdmin}
             onNavigate={(tab) => setActiveTab(tab as any)}
