@@ -156,7 +156,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
     return (
       <div
         key={match.id}
-        className={`bg-white rounded-2xl border-2 p-4 shadow-sm transition hover:shadow-md ${
+        className={`bg-white rounded-md border-2 p-4 shadow-sm transition hover:shadow-md ${
           isLive
             ? "border-rose-400 bg-rose-50/20"
             : isCompleted
@@ -376,7 +376,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Top Header & Filter Bar */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-wood-300 shadow-board flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="bg-white rounded-lg p-5 sm:p-6 border border-wood-300 shadow-board flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-black text-charcoal-900">
             Two-Board Match Schedule
@@ -476,7 +476,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
       </div>
 
       {actionError && (
-        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5 animate-shake">
+        <div className="p-4 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5 animate-shake">
           <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
           <div>
             <p className="font-bold">Schedule Notice</p>
@@ -487,8 +487,8 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
 
       {matches.length === 0 ? (
         /* Empty State */
-        <div className="bg-white rounded-3xl p-12 border-2 border-dashed border-wood-300 text-center max-w-lg mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-wood-100 text-wood-500 flex items-center justify-center mx-auto mb-4">
+        <div className="bg-white rounded-lg p-12 border-2 border-dashed border-wood-300 text-center max-w-lg mx-auto">
+          <div className="w-16 h-16 rounded-md bg-wood-100 text-wood-500 flex items-center justify-center mx-auto mb-4">
             <Calendar className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-bold text-charcoal-900 mb-1">
@@ -513,7 +513,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Lane 1: Board 1 */}
           <div className="space-y-4">
-            <div className="bg-wood-900 text-wood-50 px-4 py-3 rounded-2xl border-2 border-wood-700 flex items-center justify-between shadow-md">
+            <div className="bg-wood-900 text-wood-50 px-4 py-3 rounded-md border-2 border-wood-700 flex items-center justify-between shadow-md">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-lg bg-amber-500 text-charcoal-950 font-black text-sm flex items-center justify-center">
                   B1
@@ -534,7 +534,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
               {board1Matches.length > 0 ? (
                 board1Matches.map(renderMatchCard)
               ) : (
-                <div className="bg-white/60 rounded-2xl p-8 border border-dashed border-wood-300 text-center text-xs text-wood-500">
+                <div className="bg-white/60 rounded-md p-8 border border-dashed border-wood-300 text-center text-xs text-wood-500">
                   No matches on Board 1 matching filter.
                 </div>
               )}
@@ -543,7 +543,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
 
           {/* Lane 2: Board 2 */}
           <div className="space-y-4">
-            <div className="bg-wood-900 text-wood-50 px-4 py-3 rounded-2xl border-2 border-wood-700 flex items-center justify-between shadow-md">
+            <div className="bg-wood-900 text-wood-50 px-4 py-3 rounded-md border-2 border-wood-700 flex items-center justify-between shadow-md">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-lg bg-amber-500 text-charcoal-950 font-black text-sm flex items-center justify-center">
                   B2
@@ -564,7 +564,7 @@ export const ScheduleView: React.FC<ScheduleViewProps> = ({
               {board2Matches.length > 0 ? (
                 board2Matches.map(renderMatchCard)
               ) : (
-                <div className="bg-white/60 rounded-2xl p-8 border border-dashed border-wood-300 text-center text-xs text-wood-500">
+                <div className="bg-white/60 rounded-md p-8 border border-dashed border-wood-300 text-center text-xs text-wood-500">
                   No matches on Board 2 matching filter.
                 </div>
               )}

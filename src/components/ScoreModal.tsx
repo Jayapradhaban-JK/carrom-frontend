@@ -134,11 +134,11 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full border-2 border-wood-300 shadow-2xl relative animate-scaleIn">
+      <div className="bg-white rounded-lg p-6 sm:p-8 max-w-xl w-full border-2 border-stone-300 shadow-2xl relative animate-scaleIn">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl text-wood-400 hover:text-wood-700 hover:bg-wood-100 transition"
+          className="absolute top-5 right-5 p-2 rounded-md text-wood-400 hover:text-wood-700 hover:bg-wood-100 transition"
         >
           <X className="w-5 h-5" />
         </button>
@@ -164,7 +164,7 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
         </div>
 
         {error && (
-          <div className="mb-5 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5">
+          <div className="mb-5 p-4 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-2.5">
             <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold">Scoring Notice</p>
@@ -177,10 +177,10 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {/* Team A Box */}
           <div
-            className={`p-4 rounded-2xl border-2 transition ${
+            className={`p-4 rounded-md border-2 transition ${
               selectedWinnerId === match.team_a_id
                 ? "border-amber-500 bg-amber-50/30"
-                : "border-wood-200 bg-ivory-50/50"
+                : "border-stone-200 bg-ivory-50/50"
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -250,10 +250,10 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
 
           {/* Team B Box */}
           <div
-            className={`p-4 rounded-2xl border-2 transition ${
+            className={`p-4 rounded-md border-2 transition ${
               selectedWinnerId === match.team_b_id
                 ? "border-amber-500 bg-amber-50/30"
-                : "border-wood-200 bg-ivory-50/50"
+                : "border-stone-200 bg-ivory-50/50"
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -275,7 +275,7 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleScoreChange("B", -1)}
-                className="w-9 h-9 rounded-xl bg-wood-200 hover:bg-wood-300 text-wood-800 font-bold flex items-center justify-center transition"
+                className="w-9 h-9 rounded-md bg-wood-200 hover:bg-wood-300 text-wood-800 font-bold flex items-center justify-center transition"
               >
                 <Minus className="w-4 h-4" />
               </button>
@@ -287,7 +287,7 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleScoreChange("B", 1)}
-                className="w-9 h-9 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold flex items-center justify-center transition shadow-sm"
+                className="w-9 h-9 rounded-md bg-amber-600 hover:bg-amber-500 text-white font-bold flex items-center justify-center transition shadow-sm"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -323,7 +323,7 @@ export const ScoreModal: React.FC<ScoreModalProps> = ({
         </div>
 
         {/* Winner Designation Selector */}
-        <div className="mb-5 bg-wood-50 rounded-2xl p-4 border border-wood-200">
+        <div className="mb-5 bg-wood-50 rounded-md p-4 border border-stone-300">
           <label className="block text-xs font-bold text-charcoal-800 uppercase tracking-wide mb-2 flex items-center gap-1.5">
             <Trophy className="w-3.5 h-3.5 text-amber-600" />
             <span>Designated Match Winner</span>

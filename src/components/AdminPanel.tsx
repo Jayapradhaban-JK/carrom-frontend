@@ -399,10 +399,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <button
           type="button"
           onClick={() => setAdminTab('teams')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition shadow-sm ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs sm:text-sm font-extrabold transition shadow-sm ${
             adminTab === 'teams'
               ? 'bg-amber-600 text-white shadow-amber-600/30'
-              : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
+              : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-300'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -412,10 +412,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         <button
           type="button"
           onClick={() => setAdminTab('fixtures')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition shadow-sm ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs sm:text-sm font-extrabold transition shadow-sm ${
             adminTab === 'fixtures'
               ? 'bg-amber-600 text-white shadow-amber-600/30'
-              : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
+              : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-300'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -428,10 +428,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             setAdminTab('users');
             loadUsers();
           }}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition shadow-sm ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-md text-xs sm:text-sm font-extrabold transition shadow-sm ${
             adminTab === 'users'
               ? 'bg-amber-600 text-white shadow-amber-600/30'
-              : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
+              : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-300'
           }`}
         >
           <UserCheck className="w-4 h-4" />
@@ -444,7 +444,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* ========================================================================= */}
       {adminTab === 'teams' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
                 Registration Teams
@@ -455,14 +455,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {/* Registration toggle */}
-            <div className="flex items-center gap-3 bg-stone-50 p-2.5 rounded-2xl border border-stone-200">
+            <div className="flex items-center gap-3 bg-stone-50 p-2.5 rounded-md border border-stone-300">
               <span className="text-xs font-bold text-stone-700">
                 Window: {regOpen ? 'Open' : 'Closed'}
               </span>
               <button
                 type="button"
                 onClick={handleToggleRegistration}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm text-white ${
+                className={`px-3 py-1.5 rounded-md text-xs font-bold transition shadow-sm text-white ${
                   regOpen
                     ? 'bg-emerald-600 hover:bg-emerald-500'
                     : 'bg-rose-600 hover:bg-rose-500'
@@ -474,7 +474,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* Registration Countdown & Deadline Control */}
-          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm space-y-4">
+          <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
               <div>
                 <div className="flex items-center gap-2">
@@ -604,7 +604,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* Teams List */}
-          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm space-y-3">
+          <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm space-y-3">
             {filteredTeams.length > 0 ? (
               <div className="divide-y divide-stone-100">
                 {filteredTeams.map((team) => {
@@ -613,7 +613,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   return (
                     <div
                       key={team.id}
-                      className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-stone-50/60 px-3 rounded-2xl transition"
+                      className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-stone-50/60 px-3 rounded-md transition"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-300 bg-white shrink-0 flex items-center justify-center shadow-sm">
@@ -655,7 +655,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           type="button"
                           disabled={deletingTeamId === team.id}
                           onClick={() => handleDeleteTeam(team)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition disabled:opacity-50"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition disabled:opacity-50"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>{deletingTeamId === team.id ? 'Deleting...' : 'Delete Team'}</span>
@@ -682,7 +682,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {adminTab === 'fixtures' && (
         <div className="space-y-6">
           {/* Fixtures Generator Card */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-5">
+          <div className="bg-white rounded-lg p-6 sm:p-8 border border-stone-300 shadow-sm space-y-5">
             <div className="flex items-center justify-between pb-3 border-b border-stone-100">
               <div>
                 <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
@@ -693,20 +693,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </p>
               </div>
 
-              <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-stone-100 text-stone-800 border border-stone-200">
+              <span className="text-xs font-extrabold px-3 py-1 rounded bg-stone-100 text-stone-800 border border-stone-200">
                 {playableMatches.length} Matches Scheduled
               </span>
             </div>
 
             {fixturesMsg && (
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+              <div className="p-3.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span className="font-semibold">{fixturesMsg}</span>
               </div>
             )}
 
             {fixturesError && (
-              <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+              <div className="p-3.5 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
                 <span>{fixturesError}</span>
               </div>
@@ -793,7 +793,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           {/* Active Matches / Quick Score Card */}
           {playableMatches.length > 0 && (
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-4">
+            <div className="bg-white rounded-lg p-6 sm:p-8 border border-stone-300 shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-stone-100">
                 <div>
                   <h3 className="text-lg font-black text-stone-900">
@@ -810,7 +810,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <div
                     key={match.id}
                     onClick={() => onSelectMatchToScore(match)}
-                    className="p-3.5 rounded-2xl border border-stone-200 hover:border-amber-500 bg-stone-50/60 cursor-pointer transition shadow-sm hover:shadow"
+                    className="p-3.5 rounded-md border border-stone-200 hover:border-amber-500 bg-stone-50/60 cursor-pointer transition shadow-sm hover:shadow"
                   >
                     <div className="flex justify-between items-center text-xs mb-2 text-stone-500">
                       <span className="font-bold text-stone-800">
@@ -837,7 +837,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           )}
 
           {/* Tournament Banner Card */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-4">
+          <div className="bg-white rounded-lg p-6 sm:p-8 border border-stone-300 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-black text-stone-900">
@@ -849,14 +849,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               </div>
 
               {bannerSuccess && (
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full flex items-center gap-1 animate-fadeIn">
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded flex items-center gap-1 animate-fadeIn">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Banner Updated!
                 </span>
               )}
             </div>
 
-            <div className="w-full h-36 rounded-2xl overflow-hidden border border-stone-300 bg-stone-50 relative flex items-center justify-center">
+            <div className="w-full h-36 rounded-md overflow-hidden border border-stone-300 bg-stone-50 relative flex items-center justify-center">
               {bannerUrl ? (
                 <>
                   <img
@@ -867,7 +867,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <button
                     type="button"
                     onClick={handleRemoveBanner}
-                    className="absolute top-3 right-3 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-xl text-xs font-bold transition flex items-center gap-1"
+                    className="absolute top-3 right-3 p-1.5 bg-black/70 hover:bg-black/90 text-white rounded-md text-xs font-bold transition flex items-center gap-1"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Remove</span>
@@ -893,7 +893,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="button"
                 disabled={bannerLoading}
                 onClick={() => bannerFileInputRef.current?.click()}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
+                className="flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>{bannerLoading ? 'Uploading...' : 'Upload Banner'}</span>
@@ -905,7 +905,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   key={preset.name}
                   type="button"
                   onClick={() => handleSelectPresetBanner(preset.url)}
-                  className="text-xs font-semibold px-2.5 py-1.5 rounded-xl border border-stone-300 hover:border-amber-500 bg-stone-50 text-stone-800 transition"
+                  className="text-xs font-semibold px-2.5 py-1.5 rounded-md border border-stone-300 hover:border-amber-500 bg-stone-50 text-stone-800 transition"
                 >
                   {preset.name}
                 </button>
@@ -921,7 +921,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {adminTab === 'users' && (
         <div className="space-y-6">
           {/* Header & Stats */}
-          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight">
                 Tournament Users Pool
@@ -932,15 +932,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="px-3 py-1.5 rounded-xl bg-stone-100 border border-stone-200 text-center">
+              <div className="px-3 py-1.5 rounded-md bg-stone-100 border border-stone-200 text-center">
                 <span className="block text-[10px] text-stone-500 font-bold uppercase">Total</span>
                 <span className="text-sm font-extrabold text-stone-900">{usersList.length}</span>
               </div>
-              <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+              <div className="px-3 py-1.5 rounded-md bg-emerald-50 border border-emerald-200 text-center">
                 <span className="block text-[10px] text-emerald-700 font-bold uppercase">Available</span>
                 <span className="text-sm font-extrabold text-emerald-800">{availableCount}</span>
               </div>
-              <div className="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-center">
+              <div className="px-3 py-1.5 rounded-md bg-amber-50 border border-amber-200 text-center">
                 <span className="block text-[10px] text-amber-700 font-bold uppercase">In Teams</span>
                 <span className="text-sm font-extrabold text-amber-800">{registeredCount}</span>
               </div>
@@ -948,7 +948,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* Add Users Form Card */}
-          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm space-y-4">
+          <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-stone-100 pb-3">
               <h3 className="text-base font-bold text-stone-900 flex items-center gap-2">
                 <UserPlus className="w-4 h-4 text-amber-600" />
@@ -969,14 +969,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             {userAddMsg && (
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-fadeIn">
+              <div className="p-3 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2 animate-fadeIn">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span className="font-semibold">{userAddMsg}</span>
               </div>
             )}
 
             {userAddError && (
-              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 animate-fadeIn">
+              <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 animate-fadeIn">
                 <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
                 <span>{userAddError}</span>
               </div>
@@ -995,7 +995,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     placeholder="e.g. Rahul Sharma"
-                    className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500 font-semibold"
+                    className="w-full px-3.5 py-2 rounded-md border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500 font-semibold"
                   />
                 </div>
 
@@ -1008,7 +1008,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     value={userEmpId}
                     onChange={(e) => setUserEmpId(e.target.value)}
                     placeholder="e.g. EMP102"
-                    className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500"
+                    className="w-full px-3.5 py-2 rounded-md border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -1021,7 +1021,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     value={userDept}
                     onChange={(e) => setUserDept(e.target.value)}
                     placeholder="e.g. Product / IT"
-                    className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500"
+                    className="w-full px-3.5 py-2 rounded-md border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -1029,7 +1029,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <button
                     type="submit"
                     disabled={userAddLoading}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-md text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
                   >
                     <Plus className="w-4 h-4" />
                     <span>{userAddLoading ? 'Adding...' : 'Add User to Pool'}</span>
@@ -1048,7 +1048,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     value={bulkNamesText}
                     onChange={(e) => setBulkNamesText(e.target.value)}
                     placeholder={"Rahul Sharma\nPriya Patel\nAlex Wong\nDavid Miller\nKavita Singh"}
-                    className="w-full p-3 rounded-xl border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500 font-mono"
+                    className="w-full p-3 rounded-md border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500 font-mono"
                   />
                 </div>
 
@@ -1068,7 +1068,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <button
                     type="submit"
                     disabled={bulkLoading}
-                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
+                    className="flex items-center gap-2 px-5 py-2 rounded-md text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition disabled:opacity-50"
                   >
                     <UserPlus className="w-4 h-4" />
                     <span>{bulkLoading ? 'Adding Users...' : 'Add All Users'}</span>
@@ -1079,7 +1079,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
 
           {/* Users List & Filter */}
-          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-sm space-y-4">
+          <div className="bg-white rounded-lg p-6 border border-stone-300 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               {/* Search */}
               <div className="relative flex-1 sm:max-w-xs">
@@ -1088,13 +1088,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   value={usersSearch}
                   onChange={(e) => setUsersSearch(e.target.value)}
                   placeholder="Search user name or ID..."
-                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500"
+                  className="w-full pl-9 pr-4 py-2 rounded-md border border-stone-300 text-xs sm:text-sm bg-stone-50 outline-none focus:border-amber-500"
                 />
                 <Search className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
               </div>
 
               {/* Filter Tabs */}
-              <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl text-xs font-semibold">
+              <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-md text-xs font-semibold">
                 <button
                   type="button"
                   onClick={() => setUserFilter('all')}

@@ -109,13 +109,13 @@ export const TeamsList: React.FC<TeamsListProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Header with Search and Sort Controls */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-wood-300 shadow-board flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="bg-white rounded-lg p-5 sm:p-6 border border-stone-300 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-xl sm:text-2xl font-black text-charcoal-900">
               Registered Teams
             </h2>
-            <span className="px-3 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+            <span className="px-2.5 py-0.5 rounded text-xs font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
               {teams.length} {teams.length === 1 ? "Team" : "Teams"}
             </span>
           </div>
@@ -133,13 +133,13 @@ export const TeamsList: React.FC<TeamsListProps> = ({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search team or captain..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-wood-300 text-xs sm:text-sm outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 bg-ivory-50/50"
+              className="w-full pl-9 pr-4 py-2 rounded-md border border-stone-300 text-xs sm:text-sm outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 bg-ivory-50/50"
             />
             <Search className="w-4 h-4 text-wood-400 absolute left-3 top-2.5" />
           </div>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-1.5 bg-ivory-50 px-3 py-1.5 rounded-xl border border-wood-300 shrink-0">
+          <div className="flex items-center gap-1.5 bg-ivory-50 px-3 py-1.5 rounded-md border border-stone-300 shrink-0">
             <ArrowUpDown className="w-3.5 h-3.5 text-wood-500" />
             <select
               value={sortBy}
@@ -155,7 +155,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
           {tournament.registration_open && (
             <button
               onClick={() => onNavigate("register")}
-              className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition"
             >
               <UserPlus className="w-4 h-4" />
               <span>Register</span>
@@ -175,12 +175,12 @@ export const TeamsList: React.FC<TeamsListProps> = ({
             return (
               <div
                 key={team.id}
-                className="bg-white rounded-3xl border-2 border-wood-200 hover:border-amber-500/60 p-5 sm:p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between group"
+                className="bg-white rounded-lg border-2 border-stone-200 hover:border-amber-500/70 p-5 sm:p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between group"
               >
                 <div>
                   {/* Top Bar: Registration # and timestamp */}
                   <div className="flex items-center justify-between text-xs text-wood-500 mb-3">
-                    <span className="font-mono font-extrabold px-2.5 py-0.5 rounded-lg bg-wood-100 text-wood-800 border border-wood-200">
+                    <span className="font-mono font-extrabold px-2 py-0.5 rounded bg-wood-100 text-wood-800 border border-wood-200">
                       {team.registration_number}
                     </span>
                     <span className="text-[11px] text-wood-400">
@@ -193,7 +193,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
 
                   {/* Team Header: Logo + Name + Tagline */}
                   <div className="flex items-start gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-ivory-100 border-2 border-wood-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+                    <div className="w-12 h-12 rounded-md bg-ivory-100 border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
                       {team.logo_url ? (
                         <img
                           src={team.logo_url}
@@ -220,7 +220,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                   </div>
 
                   {/* Both Team Members Displayed Prominently */}
-                  <div className="bg-ivory-50/80 rounded-2xl p-3 border border-wood-200 space-y-2">
+                  <div className="bg-ivory-50/80 rounded-md p-3 border border-stone-200 space-y-2">
                     <div className="text-[11px] font-bold text-wood-600 uppercase tracking-wide flex items-center justify-between">
                       <span>Team Members</span>
                       <span className="text-amber-700 text-[10px]">2 Players</span>
@@ -228,31 +228,31 @@ export const TeamsList: React.FC<TeamsListProps> = ({
 
                     <div className="space-y-1.5">
                       {/* Player 1 (Captain) */}
-                      <div className="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-wood-200/80 shadow-xs">
+                      <div className="flex items-center justify-between bg-white px-3 py-2 rounded-md border border-stone-200 shadow-xs">
                         <div className="flex items-center gap-2 truncate">
-                          <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-800 font-extrabold text-[11px] flex items-center justify-center shrink-0 border border-amber-300">
+                          <span className="w-6 h-6 rounded bg-amber-500/20 text-amber-800 font-extrabold text-[11px] flex items-center justify-center shrink-0 border border-amber-300">
                             P1
                           </span>
                           <span className="font-extrabold text-xs sm:text-sm text-charcoal-900 truncate">
                             {playersInfo.player1}
                           </span>
                         </div>
-                        <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full shrink-0">
+                        <span className="text-[10px] uppercase font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded shrink-0">
                           Captain
                         </span>
                       </div>
 
                       {/* Player 2 (Teammate) */}
-                      <div className="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-wood-200/80 shadow-xs">
+                      <div className="flex items-center justify-between bg-white px-3 py-2 rounded-md border border-stone-200 shadow-xs">
                         <div className="flex items-center gap-2 truncate">
-                          <span className="w-6 h-6 rounded-lg bg-wood-100 text-wood-800 font-extrabold text-[11px] flex items-center justify-center shrink-0 border border-wood-300">
+                          <span className="w-6 h-6 rounded bg-wood-100 text-wood-800 font-extrabold text-[11px] flex items-center justify-center shrink-0 border border-wood-300">
                             P2
                           </span>
                           <span className="font-extrabold text-xs sm:text-sm text-charcoal-900 truncate">
                             {playersInfo.player2}
                           </span>
                         </div>
-                        <span className="text-[10px] uppercase font-semibold text-wood-600 bg-wood-100 px-2 py-0.5 rounded-full shrink-0">
+                        <span className="text-[10px] uppercase font-semibold text-wood-600 bg-wood-100 px-2 py-0.5 rounded shrink-0">
                           Player
                         </span>
                       </div>
@@ -291,14 +291,14 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                   <div className="mt-4 pt-3 border-t border-wood-100 flex items-center justify-end gap-2">
                     <button
                       onClick={() => handleOpenEdit(team)}
-                      className="p-1.5 text-wood-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition"
+                      className="p-1.5 text-wood-600 hover:text-amber-700 hover:bg-amber-50 rounded transition"
                       title="Edit Team"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeletingTeam(team)}
-                      className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition"
+                      className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition"
                       title="Delete Team"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -311,9 +311,9 @@ export const TeamsList: React.FC<TeamsListProps> = ({
         </div>
       ) : (
         /* Empty State */
-        <div className="bg-white rounded-3xl p-12 border-2 border-dashed border-wood-300 text-center max-w-lg mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-wood-100 text-wood-500 flex items-center justify-center mx-auto mb-4">
-            <Users className="w-8 h-8" />
+        <div className="bg-white rounded-lg p-12 border-2 border-dashed border-stone-300 text-center max-w-lg mx-auto">
+          <div className="w-14 h-14 rounded-md bg-wood-100 text-wood-500 flex items-center justify-center mx-auto mb-4 border border-stone-300">
+            <Users className="w-7 h-7" />
           </div>
           <h3 className="text-lg font-bold text-charcoal-900 mb-1">
             {search ? "No Matching Teams Found" : "No Teams Registered Yet"}
@@ -326,7 +326,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
           {tournament.registration_open && (
             <button
               onClick={() => onNavigate("register")}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-md transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-md transition"
             >
               <UserPlus className="w-4 h-4" />
               Register Team
@@ -338,7 +338,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
       {/* Admin Edit Team Modal */}
       {editingTeam && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-wood-300 shadow-2xl animate-scaleIn">
+          <div className="bg-white rounded-lg p-6 sm:p-8 max-w-md w-full border border-stone-300 shadow-2xl animate-scaleIn">
             <h3 className="text-xl font-bold text-charcoal-900 mb-1">
               Edit Team Details
             </h3>
@@ -347,7 +347,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
             </p>
 
             {editError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              <div className="mb-4 p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-700 text-xs">
                 {editError}
               </div>
             )}
@@ -362,7 +362,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                   required
                   value={editTeamName}
                   onChange={(e) => setEditTeamName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-wood-300 text-sm font-semibold outline-none focus:border-amber-500"
+                  className="w-full px-3.5 py-2 rounded-md border border-stone-300 text-sm font-semibold outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -375,7 +375,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                   required
                   value={editCaptainName}
                   onChange={(e) => setEditCaptainName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-wood-300 text-sm font-semibold outline-none focus:border-amber-500"
+                  className="w-full px-3.5 py-2 rounded-md border border-stone-300 text-sm font-semibold outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -387,22 +387,22 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                   type="text"
                   value={editContact}
                   onChange={(e) => setEditContact(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-wood-300 text-sm outline-none focus:border-amber-500"
+                  className="w-full px-3.5 py-2 rounded-md border border-stone-300 text-sm outline-none focus:border-amber-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-2.5 pt-4 border-t border-wood-200">
+              <div className="flex justify-end gap-2.5 pt-4 border-t border-stone-200">
                 <button
                   type="button"
                   onClick={() => setEditingTeam(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-wood-100 hover:bg-wood-200 text-wood-800 transition"
+                  className="px-4 py-2 rounded-md text-xs font-semibold bg-wood-100 hover:bg-wood-200 text-wood-800 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={editLoading}
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm disabled:opacity-60"
+                  className="px-5 py-2 rounded-md text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm disabled:opacity-60"
                 >
                   {editLoading ? "Saving..." : "Save Changes"}
                 </button>
@@ -415,7 +415,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
       {/* Admin Delete Confirmation Modal */}
       {deletingTeam && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full border border-wood-300 shadow-2xl text-center">
+          <div className="bg-white rounded-lg p-6 sm:p-8 max-w-sm w-full border border-stone-300 shadow-2xl text-center">
             <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
               <AlertTriangle className="w-6 h-6" />
             </div>
@@ -432,7 +432,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
               <button
                 type="button"
                 onClick={() => setDeletingTeam(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-wood-100 hover:bg-wood-200 text-wood-800 transition"
+                className="px-4 py-2 rounded-md text-xs font-semibold bg-wood-100 hover:bg-wood-200 text-wood-800 transition"
               >
                 Cancel
               </button>
@@ -440,7 +440,7 @@ export const TeamsList: React.FC<TeamsListProps> = ({
                 type="button"
                 disabled={deleteLoading}
                 onClick={handleConfirmDelete}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition shadow-sm disabled:opacity-60"
+                className="px-5 py-2 rounded-md text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition shadow-sm disabled:opacity-60"
               >
                 {deleteLoading ? "Deleting..." : "Confirm Delete"}
               </button>

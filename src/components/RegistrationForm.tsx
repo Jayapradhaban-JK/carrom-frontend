@@ -258,11 +258,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   // If registration is closed
   if (!tournament.registration_open) {
     return (
-      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-stone-200 shadow-sm text-center">
-        <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-4 border border-amber-200">
-          <ShieldAlert className="w-8 h-8" />
+      <div className="max-w-xl mx-auto bg-white rounded-lg p-8 border-2 border-stone-300 shadow-sm text-center">
+        <div className="w-14 h-14 rounded-md bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-4 border border-amber-200">
+          <ShieldAlert className="w-7 h-7" />
         </div>
-        <h3 className="text-xl font-bold text-stone-900 mb-2">
+        <h3 className="text-xl font-black text-stone-900 mb-2">
           Registration is Closed
         </h3>
         <p className="text-sm text-stone-600 mb-6 leading-relaxed">
@@ -272,14 +272,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <button
             type="button"
             onClick={() => onNavigate('fixtures')}
-            className="px-5 py-2.5 rounded-xl text-sm font-bold bg-amber-600 text-white hover:bg-amber-500 transition shadow-sm"
+            className="px-5 py-2.5 rounded-md text-sm font-bold bg-amber-600 text-white hover:bg-amber-500 transition shadow-sm"
           >
             See Fixtures &amp; Bracket
           </button>
           <button
             type="button"
             onClick={() => onNavigate('teams')}
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-stone-800 text-white hover:bg-stone-700 transition"
+            className="px-5 py-2.5 rounded-md text-sm font-semibold bg-stone-800 text-white hover:bg-stone-700 transition"
           >
             View Teams
           </button>
@@ -296,12 +296,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
     return (
       <div className="max-w-xl mx-auto py-8 sm:py-12 animate-fadeIn text-center">
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 shadow-sm relative">
-          <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-4 border border-amber-200">
-            <Clock className="w-8 h-8 animate-pulse text-amber-600" />
+        <div className="bg-white rounded-lg p-8 sm:p-10 border-2 border-stone-300 shadow-sm relative">
+          <div className="w-14 h-14 rounded-md bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-4 border border-amber-200">
+            <Clock className="w-7 h-7 animate-pulse text-amber-600" />
           </div>
 
-          <span className="inline-block px-3.5 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-amber-100 text-amber-800 mb-2">
+          <span className="inline-block px-3 py-1 rounded text-xs font-black tracking-wider uppercase bg-amber-100 text-amber-800 mb-2">
             Registration Begins Soon
           </span>
 
@@ -317,7 +317,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6">
             {timeLeft.days > 0 && (
               <>
-                <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-stone-200 min-w-[70px] shadow-sm">
+                <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-md border border-stone-300 min-w-[70px] shadow-sm">
                   <span className="block text-2xl sm:text-3xl font-black text-stone-900 font-mono">
                     {String(timeLeft.days).padStart(2, '0')}
                   </span>
@@ -327,7 +327,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               </>
             )}
 
-            <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-stone-200 min-w-[70px] shadow-sm">
+            <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-md border border-stone-300 min-w-[70px] shadow-sm">
               <span className="block text-2xl sm:text-3xl font-black text-stone-900 font-mono">
                 {String(timeLeft.hours).padStart(2, '0')}
               </span>
@@ -336,7 +336,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
             <span className="text-2xl font-black text-amber-600">:</span>
 
-            <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-stone-200 min-w-[70px] shadow-sm">
+            <div className="bg-stone-50 px-4 py-3 sm:px-5 sm:py-4 rounded-md border border-stone-300 min-w-[70px] shadow-sm">
               <span className="block text-2xl sm:text-3xl font-black text-stone-900 font-mono">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </span>
@@ -345,7 +345,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
             <span className="text-2xl font-black text-amber-600">:</span>
 
-            <div className="bg-amber-50 px-4 py-3 sm:px-5 sm:py-4 rounded-2xl border border-amber-300 min-w-[70px] shadow-sm">
+            <div className="bg-amber-50 px-4 py-3 sm:px-5 sm:py-4 rounded-md border border-amber-300 min-w-[70px] shadow-sm">
               <span className="block text-2xl sm:text-3xl font-black text-amber-700 font-mono">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </span>
@@ -354,9 +354,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </div>
 
           {targetDateStr && (
-            <p className="text-xs text-stone-400">
+            <p className="text-xs text-stone-500">
               Registration unlocks at:{' '}
-              <strong className="text-stone-700">
+              <strong className="text-stone-800">
                 {new Date(targetDateStr).toLocaleString([], {
                   dateStyle: 'medium',
                   timeStyle: 'short',
@@ -365,18 +365,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </p>
           )}
 
-          <div className="mt-8 pt-6 border-t border-stone-100 flex justify-center gap-3">
+          <div className="mt-8 pt-6 border-t border-stone-200 flex justify-center gap-3">
             <button
               type="button"
               onClick={() => onNavigate('teams')}
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition"
+              className="px-4 py-2 rounded-md text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition"
             >
               View Registered Teams
             </button>
             <button
               type="button"
               onClick={() => onNavigate('fixtures')}
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition"
+              className="px-4 py-2 rounded-md text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 transition"
             >
               View Fixtures
             </button>
@@ -389,8 +389,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   // Registration Success Confirmation
   if (registeredTeam) {
     return (
-      <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border-2 border-emerald-300 shadow-sm text-center animate-fadeIn">
-        <div className="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-emerald-300 p-1 bg-emerald-50 flex items-center justify-center shadow-md">
+      <div className="max-w-xl mx-auto bg-white rounded-lg p-8 border-2 border-emerald-400 shadow-sm text-center animate-fadeIn">
+        <div className="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-emerald-400 p-1 bg-emerald-50 flex items-center justify-center shadow-sm">
           {registeredTeam.logo_url ? (
             <img
               src={registeredTeam.logo_url}
@@ -398,11 +398,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               className="w-full h-full object-cover rounded-full"
             />
           ) : (
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+            <CheckCircle2 className="w-8 h-8 text-emerald-600" />
           )}
         </div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-2">
+        <span className="inline-block px-3 py-1 rounded text-xs font-bold bg-emerald-100 text-emerald-800 mb-2">
           Team Registered Successfully!
         </span>
 
@@ -416,7 +416,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </p>
         )}
 
-        <div className="my-5 p-4 bg-stone-50 rounded-2xl border border-stone-200 inline-block w-full text-left">
+        <div className="my-5 p-4 bg-stone-50 rounded-md border border-stone-300 inline-block w-full text-left">
           <div className="flex justify-between items-center pb-2 border-b border-stone-200">
             <span className="text-xs text-stone-600 font-semibold uppercase">
               Registration Number
@@ -447,14 +447,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <button
             type="button"
             onClick={handleResetForm}
-            className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-stone-100 text-stone-800 hover:bg-stone-200 transition"
+            className="px-5 py-2.5 rounded-md text-xs sm:text-sm font-semibold bg-stone-100 text-stone-800 hover:bg-stone-200 transition"
           >
             Register Another Team
           </button>
           <button
             type="button"
             onClick={() => onNavigate('teams')}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-md text-xs sm:text-sm font-bold bg-amber-600 hover:bg-amber-500 text-white transition shadow-sm"
           >
             <span>View Teams</span>
             <ArrowRight className="w-4 h-4" />
@@ -503,7 +503,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         {/* ========================================================================= */}
         {/* LEFT COLUMN: TEAM REGISTRATION FORM (lg:col-span-7) */}
         {/* ========================================================================= */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-stone-200 shadow-sm space-y-5">
+        <div className="lg:col-span-7 bg-white rounded-lg p-6 sm:p-7 border-2 border-stone-200/90 shadow-sm space-y-5">
           <div>
             <div className="inline-flex items-center gap-1.5 text-amber-700 text-xs font-bold uppercase tracking-wider mb-1">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -518,7 +518,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </div>
 
           {error && (
-            <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-shake">
+            <div className="p-3.5 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-shake">
               <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold">Registration Error</p>
@@ -545,7 +545,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
                 placeholder="e.g. Strike Kings, Red Queens, Board Masters"
-                className={`w-full px-4 py-2.5 rounded-xl border text-sm font-semibold text-stone-900 placeholder:text-stone-400 outline-none transition ${
+                className={`w-full px-4 py-2.5 rounded-md border text-sm font-semibold text-stone-900 placeholder:text-stone-400 outline-none transition ${
                   isTeamNameDuplicate
                     ? 'border-rose-400 bg-rose-50/40 focus:border-rose-500 ring-2 ring-rose-200'
                     : 'border-stone-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 bg-stone-50/50'
@@ -571,7 +571,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Slot 1: Player 1 (Captain) */}
                 <div
-                  className={`p-3.5 rounded-2xl border-2 transition ${
+                  className={`p-3.5 rounded-md border-2 transition ${
                     player1User
                       ? 'border-amber-500 bg-amber-50/50 shadow-sm'
                       : 'border-dashed border-stone-300 bg-stone-50/60'
@@ -586,7 +586,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveSlot(1)}
-                        className="p-1 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-white transition"
+                        className="p-1 rounded text-stone-400 hover:text-rose-600 hover:bg-white transition"
                         title="Remove Player 1"
                       >
                         <X className="w-4 h-4" />
@@ -611,7 +611,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
                 {/* Slot 2: Player 2 */}
                 <div
-                  className={`p-3.5 rounded-2xl border-2 transition ${
+                  className={`p-3.5 rounded-md border-2 transition ${
                     player2User
                       ? 'border-amber-500 bg-amber-50/50 shadow-sm'
                       : 'border-dashed border-stone-300 bg-stone-50/60'
@@ -626,7 +626,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveSlot(2)}
-                        className="p-1 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-white transition"
+                        className="p-1 rounded text-stone-400 hover:text-rose-600 hover:bg-white transition"
                         title="Remove Player 2"
                       >
                         <X className="w-4 h-4" />
@@ -663,7 +663,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
                   placeholder="e.g. Pocketing wins, one coin at a time"
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-stone-300 focus:border-amber-500 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-md border border-stone-300 focus:border-amber-500 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition bg-stone-50/50"
                 />
                 <Quote className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
               </div>
@@ -675,8 +675,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 Team Logo / Avatar
               </label>
 
-              <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-2xl border border-stone-200">
-                <div className="w-12 h-12 rounded-2xl bg-white border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
+              <div className="flex items-center gap-3 p-3 bg-stone-50 rounded-md border border-stone-300">
+                <div className="w-12 h-12 rounded-md bg-white border border-stone-300 overflow-hidden shrink-0 flex items-center justify-center shadow-sm">
                   {logoUrl ? (
                     <img
                       src={logoUrl}
@@ -699,7 +699,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-md text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition shadow-sm flex items-center gap-1.5"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>Upload Logo</span>
@@ -743,7 +743,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   isTeamNameDuplicate ||
                   Boolean(timeLeft?.isExpired)
                 }
-                className="w-full py-3.5 px-6 rounded-2xl text-sm sm:text-base font-extrabold text-white bg-amber-600 hover:bg-amber-500 active:scale-[0.99] transition shadow-md hover:shadow-amber-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 px-6 rounded-md text-sm sm:text-base font-extrabold text-white bg-amber-600 hover:bg-amber-500 active:scale-[0.99] transition shadow-md hover:shadow-amber-600/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (
                   <span>Registering 2-Player Team...</span>
@@ -763,8 +763,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         {/* ========================================================================= */}
         {/* RIGHT COLUMN: TOURNAMENT USERS POOL DIRECTORY (lg:col-span-5) */}
         {/* ========================================================================= */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-5 sm:p-6 border border-stone-200 shadow-sm space-y-4 lg:sticky lg:top-4">
-          <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div className="lg:col-span-5 bg-white rounded-lg p-5 sm:p-6 border-2 border-stone-200/90 shadow-sm space-y-4 lg:sticky lg:top-4">
+          <div className="flex items-center justify-between border-b border-stone-200 pb-3">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-amber-600" />
               <h3 className="text-sm font-black text-stone-900 uppercase tracking-wide">
@@ -784,13 +784,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </div>
 
           {/* Sub-Tabs: Available vs In Team vs All */}
-          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-xl text-xs font-semibold">
+          <div className="flex items-center gap-1 bg-stone-100 p-1 rounded-md text-xs font-semibold border border-stone-200">
             <button
               type="button"
               onClick={() => setUserTab('available')}
-              className={`flex-1 py-1.5 rounded-lg transition text-center ${
+              className={`flex-1 py-1.5 rounded transition text-center ${
                 userTab === 'available'
-                  ? 'bg-white text-emerald-800 shadow-sm font-bold'
+                  ? 'bg-white text-emerald-800 shadow-sm font-bold border border-stone-200'
                   : 'text-stone-600 hover:text-stone-900'
               }`}
             >
@@ -799,9 +799,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <button
               type="button"
               onClick={() => setUserTab('chosen')}
-              className={`flex-1 py-1.5 rounded-lg transition text-center ${
+              className={`flex-1 py-1.5 rounded transition text-center ${
                 userTab === 'chosen'
-                  ? 'bg-white text-amber-900 shadow-sm font-bold'
+                  ? 'bg-white text-amber-900 shadow-sm font-bold border border-stone-200'
                   : 'text-stone-600 hover:text-stone-900'
               }`}
             >
@@ -810,9 +810,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <button
               type="button"
               onClick={() => setUserTab('all')}
-              className={`px-2.5 py-1.5 rounded-lg transition text-center ${
+              className={`px-2.5 py-1.5 rounded transition text-center ${
                 userTab === 'all'
-                  ? 'bg-white text-stone-900 shadow-sm font-bold'
+                  ? 'bg-white text-stone-900 shadow-sm font-bold border border-stone-200'
                   : 'text-stone-600 hover:text-stone-900'
               }`}
             >
@@ -827,7 +827,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               value={usersSearch}
               onChange={(e) => setUsersSearch(e.target.value)}
               placeholder="Search by name, ID, team..."
-              className="w-full pl-8 pr-3 py-2 rounded-xl border border-stone-300 text-xs bg-stone-50 outline-none focus:border-amber-500"
+              className="w-full pl-8 pr-3 py-2 rounded-md border border-stone-300 text-xs bg-stone-50 outline-none focus:border-amber-500"
             />
             <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-2.5" />
           </div>
@@ -849,9 +849,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 return (
                   <div
                     key={user.id}
-                    className={`p-3 rounded-2xl border transition flex items-center justify-between gap-2 ${
+                    className={`p-2.5 rounded-md border transition flex items-center justify-between gap-2 ${
                       isSelectedInCurrent
-                        ? 'bg-amber-100/80 border-amber-400 shadow-sm'
+                        ? 'bg-amber-100/90 border-amber-400 shadow-sm'
                         : isAlreadyInTeam
                         ? 'bg-stone-50 border-stone-200 opacity-60'
                         : 'bg-white border-stone-200 hover:border-amber-400 hover:bg-amber-50/30 shadow-sm'
@@ -860,14 +860,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     {/* User Info */}
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
+                        className={`w-7 h-7 rounded-md flex items-center justify-center font-bold text-xs shrink-0 ${
                           isP1
                             ? 'bg-amber-600 text-white'
                             : isP2
                             ? 'bg-stone-800 text-white'
                             : isAlreadyInTeam
                             ? 'bg-stone-300 text-stone-600'
-                            : 'bg-emerald-100 text-emerald-800'
+                            : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                         }`}
                       >
                         {isP1 ? '👑' : user.name.charAt(0).toUpperCase()}
@@ -892,7 +892,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     {/* Quick action buttons */}
                     <div className="flex items-center gap-1 shrink-0">
                       {isAlreadyInTeam ? (
-                        <span className="flex items-center gap-1 text-[10px] font-bold text-stone-500 bg-stone-200 px-2 py-1 rounded-lg">
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-stone-500 bg-stone-200 px-2 py-1 rounded">
                           <Lock className="w-3 h-3" />
                           <span>In Team</span>
                         </span>
@@ -900,7 +900,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                         <button
                           type="button"
                           onClick={() => handleAssignUser(user)}
-                          className="flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg border border-rose-200 transition"
+                          className="flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-md border border-rose-200 transition"
                         >
                           <X className="w-3 h-3" />
                           <span>Deselect</span>
@@ -910,7 +910,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <button
                             type="button"
                             onClick={() => handleAssignUser(user, 1)}
-                            className="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition"
+                            className="px-2 py-1 rounded-md text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition"
                             title="Assign as Player 1 (Captain)"
                           >
                             + Captain
@@ -918,7 +918,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                           <button
                             type="button"
                             onClick={() => handleAssignUser(user, 2)}
-                            className="px-2 py-1 rounded-lg text-[10px] font-bold bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 transition"
+                            className="px-2 py-1 rounded-md text-[10px] font-bold bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 transition"
                             title="Assign as Player 2"
                           >
                             + Player 2

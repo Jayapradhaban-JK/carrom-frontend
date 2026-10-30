@@ -65,7 +65,7 @@ export const AdminSettingsModal: React.FC<AdminSettingsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-wood-300 shadow-2xl relative animate-scaleIn">
+      <div className="bg-white rounded-lg p-6 sm:p-8 max-w-md w-full border border-wood-300 shadow-2xl relative animate-scaleIn">
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-wood-400 hover:text-wood-700 rounded-xl transition"
@@ -73,7 +73,7 @@ export const AdminSettingsModal: React.FC<AdminSettingsModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        <div className="w-12 h-12 rounded-2xl bg-wood-100 text-wood-800 flex items-center justify-center mb-3">
+        <div className="w-12 h-12 rounded-md bg-wood-100 text-wood-800 flex items-center justify-center mb-3">
           <Settings className="w-6 h-6" />
         </div>
 
@@ -85,7 +85,7 @@ export const AdminSettingsModal: React.FC<AdminSettingsModalProps> = ({
         </p>
 
         {error && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
+          <div className="mb-4 p-3.5 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -107,7 +107,7 @@ export const AdminSettingsModal: React.FC<AdminSettingsModalProps> = ({
           </div>
 
           {/* Registration Open Toggle */}
-          <div className="flex items-center justify-between p-3.5 bg-ivory-50 rounded-2xl border border-wood-200">
+          <div className="flex items-center justify-between p-3.5 bg-ivory-50 rounded-md border border-wood-200">
             <div>
               <div className="text-xs font-bold text-charcoal-900">
                 Team Registration

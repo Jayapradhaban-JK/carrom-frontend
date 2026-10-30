@@ -42,7 +42,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
     <div className="space-y-6 animate-fadeIn">
       {/* 1. TOURNAMENT BANNER */}
       {tournament.banner_url ? (
-        <div className="w-full h-44 sm:h-64 rounded-3xl overflow-hidden shadow-board border-4 border-wood-700 relative group">
+        <div className="w-full h-44 sm:h-64 rounded-lg overflow-hidden shadow-board border-2 border-wood-700 relative group">
           <img
             src={tournament.banner_url}
             alt="Tournament Banner"
@@ -60,7 +60,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
         </div>
       ) : (
         /* Default Carrom Banner if no custom banner uploaded */
-        <div className="bg-gradient-to-r from-wood-900 via-wood-800 to-wood-900 rounded-3xl p-6 sm:p-8 border-4 border-wood-700 shadow-board relative overflow-hidden">
+        <div className="bg-gradient-to-r from-wood-900 via-wood-800 to-wood-900 rounded-lg p-6 sm:p-8 border-2 border-wood-700 shadow-board relative overflow-hidden">
           <div className="relative z-10 max-w-2xl">
             <span className="text-amber-400 font-bold uppercase tracking-widest text-[11px] flex items-center gap-1.5 mb-1.5">
               <Flame className="w-4 h-4 text-amber-500" />
@@ -78,7 +78,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
 
       {/* 2. CHAMPION BANNER PODIUM */}
       {champion && (
-        <div className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-3xl p-6 sm:p-8 text-charcoal-950 shadow-2xl border-4 border-amber-300 text-center relative overflow-hidden animate-scaleIn">
+        <div className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-lg p-6 sm:p-8 text-charcoal-950 shadow-2xl border-2 border-amber-300 text-center relative overflow-hidden animate-scaleIn">
           <div className="w-20 h-20 rounded-full bg-white/95 text-amber-600 p-1.5 flex items-center justify-center mx-auto mb-3 shadow-lg border-2 border-amber-400">
             {champion.logo_url ? (
               <img
@@ -91,7 +91,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
             )}
           </div>
 
-          <span className="inline-block uppercase tracking-widest text-xs font-black bg-charcoal-950 text-amber-300 px-3 py-1 rounded-full mb-2">
+          <span className="inline-block uppercase tracking-widest text-xs font-black bg-charcoal-950 text-amber-300 px-3 py-1 rounded mb-2">
             Tournament Champion
           </span>
 
@@ -111,13 +111,13 @@ export const BracketView: React.FC<BracketViewProps> = ({
 
           <div className="flex flex-wrap justify-center gap-3 text-xs font-extrabold">
             {runnerUp && (
-              <span className="bg-white/85 px-3 py-1.5 rounded-xl border border-charcoal-900/10 flex items-center gap-1.5">
+              <span className="bg-white/85 px-3 py-1.5 rounded-md border border-charcoal-900/10 flex items-center gap-1.5">
                 <Award className="w-4 h-4 text-slate-500" />
                 Runner-Up: {runnerUp.team_name}
               </span>
             )}
             {thirdPlace && (
-              <span className="bg-white/85 px-3 py-1.5 rounded-xl border border-charcoal-900/10 flex items-center gap-1.5">
+              <span className="bg-white/85 px-3 py-1.5 rounded-md border border-charcoal-900/10 flex items-center gap-1.5">
                 <Award className="w-4 h-4 text-amber-800" />
                 3rd Place: {thirdPlace.team_name}
               </span>
@@ -128,10 +128,10 @@ export const BracketView: React.FC<BracketViewProps> = ({
 
       {/* 3. CONNECTING ARCHITECTURE BRACKET TREE */}
       {sortedRoundNumbers.length > 0 ? (
-        <div className="bg-white rounded-3xl p-5 sm:p-8 border border-wood-300 shadow-board overflow-x-auto">
+        <div className="bg-white rounded-lg p-5 sm:p-8 border border-stone-300 shadow-board overflow-x-auto">
           <div className="flex items-center justify-between mb-4 pb-2 border-b border-wood-100">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span className="w-2.5 h-2.5 rounded-sm bg-amber-500"></span>
               <h3 className="font-extrabold text-sm sm:text-base text-charcoal-900 uppercase tracking-wide">
                 Knockout Tree Architecture
               </h3>
@@ -141,7 +141,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
                 <button
                   type="button"
                   onClick={onDeleteFixtures}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-sm transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-sm transition"
                   title="Delete all fixtures"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -163,7 +163,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
               return (
                 <div key={roundNum} className="flex-1 min-w-[260px] flex flex-col relative">
                   {/* Round Header Column Pill */}
-                  <div className="bg-wood-800 text-wood-50 px-4 py-2.5 rounded-2xl text-center font-extrabold text-xs sm:text-sm uppercase tracking-wider mb-6 border border-wood-600 shadow-sm">
+                  <div className="bg-wood-800 text-wood-50 px-4 py-2.5 rounded-md text-center font-extrabold text-xs sm:text-sm uppercase tracking-wider mb-6 border border-wood-600 shadow-sm">
                     {roundTitle}
                   </div>
 
@@ -184,7 +184,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
                           {/* Match Card Container */}
                           <div
                             onClick={() => onSelectMatch && onSelectMatch(match)}
-                            className={`w-full bg-wood-50/80 rounded-2xl border-2 p-3.5 shadow-sm transition relative z-10 ${
+                            className={`w-full bg-wood-50/80 rounded-md border-2 p-3.5 shadow-sm transition relative z-10 ${
                               match.status === 'IN_PROGRESS'
                                 ? 'border-rose-400 bg-rose-50/40 ring-2 ring-rose-400/50'
                                 : isCompleted
@@ -202,7 +202,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
                             </div>
 
                             {isBye ? (
-                              <div className="bg-amber-100/70 rounded-xl p-2.5 border border-amber-300 text-center">
+                              <div className="bg-amber-100/70 rounded-md p-2.5 border border-amber-300 text-center">
                                 <span className="inline-block px-2 py-0.5 rounded bg-amber-500 text-wood-950 font-black text-[10px] uppercase mb-1">
                                   First Round BYE
                                 </span>
@@ -228,10 +228,10 @@ export const BracketView: React.FC<BracketViewProps> = ({
                                 </p>
                               </div>
                             ) : (
-                              <div className="space-y-2 bg-white rounded-xl p-2.5 border border-wood-200">
+                              <div className="space-y-2 bg-white rounded-md p-2.5 border border-wood-200">
                                 {/* Team A Box */}
                                 <div
-                                  className={`flex items-center justify-between p-1.5 rounded-lg transition ${
+                                  className={`flex items-center justify-between p-1.5 rounded transition ${
                                     isWinnerA
                                       ? 'bg-amber-100/90 font-extrabold text-amber-950 border border-amber-300'
                                       : 'text-charcoal-800'
@@ -276,7 +276,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
 
                                 {/* Team B Box */}
                                 <div
-                                  className={`flex items-center justify-between p-1.5 rounded-lg transition ${
+                                  className={`flex items-center justify-between p-1.5 rounded transition ${
                                     isWinnerB
                                       ? 'bg-amber-100/90 font-extrabold text-amber-950 border border-amber-300'
                                       : 'text-charcoal-800'
@@ -342,18 +342,18 @@ export const BracketView: React.FC<BracketViewProps> = ({
           {/* 3rd Place Match Card */}
           {thirdPlaceMatch && (
             <div className="mt-8 pt-6 border-t border-wood-200 max-w-sm mx-auto text-center">
-              <span className="inline-block uppercase tracking-wider text-[11px] font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full mb-2">
+              <span className="inline-block uppercase tracking-wider text-[11px] font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded mb-2">
                 🥉 3rd Place Playoff
               </span>
               <div
                 onClick={() => onSelectMatch && onSelectMatch(thirdPlaceMatch)}
-                className="bg-ivory-50 rounded-2xl border-2 border-wood-300 p-4 shadow-sm text-left cursor-pointer hover:border-amber-500 transition"
+                className="bg-ivory-50 rounded-md border-2 border-stone-300 p-4 shadow-sm text-left cursor-pointer hover:border-amber-500 transition"
               >
                 <div className="flex justify-between items-center text-xs mb-2 text-wood-600">
                   <span>Match #{thirdPlaceMatch.match_number}</span>
                   <span>Board {thirdPlaceMatch.board_number}</span>
                 </div>
-                <div className="space-y-1.5 bg-white rounded-xl p-2.5 border border-wood-200 text-xs">
+                <div className="space-y-1.5 bg-white rounded-md p-2.5 border border-stone-200 text-xs">
                   <div className="flex justify-between items-center">
                     <span className="font-bold truncate">
                       {thirdPlaceMatch.team_a?.team_name || 'Semifinal 1 Loser'}
@@ -376,8 +376,8 @@ export const BracketView: React.FC<BracketViewProps> = ({
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl p-10 sm:p-14 border-2 border-dashed border-wood-300 text-center max-w-lg mx-auto shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-300 flex items-center justify-center mx-auto mb-3.5 text-amber-700">
+        <div className="bg-white rounded-lg p-10 sm:p-14 border-2 border-dashed border-stone-300 text-center max-w-lg mx-auto shadow-sm">
+          <div className="w-14 h-14 rounded-md bg-amber-500/10 border border-amber-300 flex items-center justify-center mx-auto mb-3.5 text-amber-700">
             <Layers className="w-7 h-7" />
           </div>
           <h4 className="font-black text-lg text-charcoal-900 mb-1.5">

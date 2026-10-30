@@ -109,7 +109,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-wood-300 shadow-2xl relative animate-scaleIn">
+      <div className="bg-white rounded-lg p-6 sm:p-8 max-w-lg w-full border border-wood-300 shadow-2xl relative animate-scaleIn">
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-wood-400 hover:text-wood-700 rounded-xl transition"
@@ -129,7 +129,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
         </p>
 
         {error && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
+          <div className="mb-4 p-3.5 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
             <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -145,7 +145,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
               <button
                 type="button"
                 onClick={() => setFormat('SINGLE_ELIMINATION')}
-                className={`p-3 rounded-2xl border-2 text-left transition ${
+                className={`p-3 rounded-md border-2 text-left transition ${
                   format === 'SINGLE_ELIMINATION'
                     ? 'border-amber-600 bg-amber-50/50 shadow-sm'
                     : 'border-wood-200 hover:border-wood-300 bg-white'
@@ -162,7 +162,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
               <button
                 type="button"
                 onClick={() => setFormat('ROUND_ROBIN')}
-                className={`p-3 rounded-2xl border-2 text-left transition ${
+                className={`p-3 rounded-md border-2 text-left transition ${
                   format === 'ROUND_ROBIN'
                     ? 'border-amber-600 bg-amber-50/50 shadow-sm'
                     : 'border-wood-200 hover:border-wood-300 bg-white'
@@ -210,7 +210,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
           </div>
 
           {/* Number of boards notification */}
-          <div className="p-3 bg-wood-50 rounded-2xl border border-wood-200 text-xs text-wood-700 flex items-center justify-between">
+          <div className="p-3 bg-wood-50 rounded-md border border-wood-200 text-xs text-wood-700 flex items-center justify-between">
             <span className="font-semibold">Number of Courts / Boards:</span>
             <span className="font-bold text-charcoal-900 bg-white px-2 py-0.5 rounded border border-wood-300">
               Fixed at 2 Boards
@@ -219,7 +219,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
 
           {/* 3rd place toggle (knockout only) */}
           {format === 'SINGLE_ELIMINATION' && (
-            <label className="flex items-center gap-2.5 p-3 rounded-2xl border border-wood-200 bg-ivory-50/40 cursor-pointer">
+            <label className="flex items-center gap-2.5 p-3 rounded-md border border-wood-200 bg-ivory-50/40 cursor-pointer">
               <input
                 type="checkbox"
                 checked={thirdPlace}
@@ -234,7 +234,7 @@ export const AdminFixturesModal: React.FC<AdminFixturesModalProps> = ({
 
           {/* Existing matches warning */}
           {hasExistingMatches && (
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 space-y-2">
+            <div className="p-3.5 rounded-md bg-amber-50 border border-amber-300 space-y-2">
               <div className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
                 <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
                 <span>Existing Fixtures Found ({matchesCount} matches)</span>

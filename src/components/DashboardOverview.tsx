@@ -40,7 +40,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
     const match = boardInfo.current_match;
 
     return (
-      <div className="bg-wood-50 rounded-2xl border-2 border-wood-300 shadow-board overflow-hidden relative group hover:border-amber-600/60 transition duration-300">
+      <div className="bg-wood-50 rounded-md border-2 border-wood-300 shadow-board overflow-hidden relative group hover:border-amber-600/60 transition duration-300">
         {/* Top wood trim */}
         <div className="bg-wood-800 text-wood-100 px-5 py-3 flex items-center justify-between border-b border-wood-600">
           <div className="flex items-center gap-2">
@@ -183,7 +183,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Hero Welcome Banner */}
-      <div className="bg-gradient-to-br from-wood-900 via-wood-800 to-wood-900 text-wood-50 rounded-3xl p-6 sm:p-8 shadow-board border-4 border-wood-700 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-wood-900 via-wood-800 to-wood-900 text-wood-50 rounded-lg p-6 sm:p-8 shadow-board border-4 border-wood-700 relative overflow-hidden">
         {/* Background decorative carrom circle ring */}
         <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full border-8 border-wood-700/30 pointer-events-none"></div>
         <div className="absolute -right-8 -top-8 w-48 h-48 rounded-full border-4 border-amber-500/10 pointer-events-none"></div>
@@ -239,7 +239,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
       {/* Key Stats Counter Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        <div className="bg-white rounded-2xl p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-md p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
           <div className="text-xs font-semibold text-wood-600 mb-1">Registered Teams</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-charcoal-900 flex items-baseline gap-1">
             {stats.total_teams}
@@ -247,7 +247,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-md p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
           <div className="text-xs font-semibold text-wood-600 mb-1">Total Players</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-charcoal-900 flex items-baseline gap-1">
             {stats.total_players}
@@ -255,7 +255,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-md p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
           <div className="text-xs font-semibold text-wood-600 mb-1">Total Matches</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-charcoal-900 flex items-baseline gap-1">
             {stats.total_matches}
@@ -263,7 +263,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-md p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
           <div className="text-xs font-semibold text-emerald-700 mb-1">Completed</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 flex items-baseline gap-1">
             {stats.completed_matches}
@@ -271,7 +271,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-md p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
           <div className="text-xs font-semibold text-rose-700 mb-1">In Progress</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-rose-600 flex items-baseline gap-1">
             {stats.in_progress_matches}
@@ -279,7 +279,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
+        <div className="bg-white rounded-md p-4 border border-wood-200/80 shadow-sm hover:shadow-md transition">
           <div className="text-xs font-semibold text-amber-700 mb-1">Upcoming</div>
           <div className="text-2xl sm:text-3xl font-extrabold text-amber-600 flex items-baseline gap-1">
             {stats.upcoming_matches}
@@ -314,7 +314,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
       </div>
 
       {/* Tournament Settings & Admin Quick Controls */}
-      <div className="bg-white rounded-2xl p-5 border border-wood-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white rounded-md p-5 border border-wood-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-charcoal-900">

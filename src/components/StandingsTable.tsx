@@ -23,7 +23,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({
     <div className="space-y-6 animate-fadeIn">
       {/* Champion Podium if Completed */}
       {champion && (
-        <div className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-3xl p-6 sm:p-8 text-charcoal-950 shadow-2xl border-4 border-amber-300 text-center relative overflow-hidden">
+        <div className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-lg p-6 sm:p-8 text-charcoal-950 shadow-2xl border-4 border-amber-300 text-center relative overflow-hidden">
           <div className="w-16 h-16 rounded-full bg-white/90 text-amber-600 flex items-center justify-center mx-auto mb-3 shadow-md border-2 border-amber-400">
             <Trophy className="w-9 h-9" />
           </div>
@@ -58,7 +58,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({
       )}
 
       {/* Progress Bar */}
-      <div className="bg-white rounded-2xl p-4 border border-wood-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-white rounded-md p-4 border border-wood-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-amber-600" />
           <span className="text-xs font-bold text-charcoal-900">
@@ -78,7 +78,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({
       </div>
 
       {/* Standings Table Card */}
-      <div className="bg-white rounded-3xl border border-wood-300 shadow-board overflow-hidden">
+      <div className="bg-white rounded-lg border border-wood-300 shadow-board overflow-hidden">
         <div className="p-5 bg-wood-900 text-wood-50 flex items-center justify-between border-b border-wood-700">
           <div>
             <h3 className="font-bold text-base text-ivory-50">
